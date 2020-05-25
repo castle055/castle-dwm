@@ -3,7 +3,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 0;        /* border pixel of windows */
+static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 30;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
@@ -20,8 +20,8 @@ static const char col_prim2[]	    = "#111326";
 static const char col_sec[]	    = "#fcae1e";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm] = { col_sec,   col_prim2, col_prim2 },
-	[SchemeSel]  = { col_sec,   col_prim,  col_prim  },
+	[SchemeNorm] = { col_sec,   col_prim2, col_sec },
+	[SchemeSel]  = { col_sec,   col_prim,  col_sec  },
 };
 
 /* Gapps */
