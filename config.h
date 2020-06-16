@@ -3,7 +3,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int borderpx  = 0;        /* border pixel of windows */
 static const unsigned int snap      = 30;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
@@ -18,17 +18,41 @@ static const char col_cyan[]        = "#005577";
 static const char col_prim[]	    = "#06060a";
 static const char col_prim2[]	    = "#111326";
 static const char col_sec[]	    = "#fcae1e";
-static const char *colors[][3]      = {
+static const char col_red[]	    = "#cc0000";
+static const char col_red2[]	    = "#150000";
+static const char col_red3[]	    = "#0a0000";
+static char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_sec,   col_prim2, col_sec },
 	[SchemeSel]  = { col_sec,   col_prim,  col_sec  },
 };
+static int isRed = 0;
+void
+switchToRed(){
+	colors[SchemeNorm][0] = col_red;
+	colors[SchemeNorm][1] = col_red2;
+	colors[SchemeNorm][2] = col_red;
+	colors[SchemeSel][0]  = col_red;
+	colors[SchemeSel][1]  = col_red3;
+	colors[SchemeSel][2]  = col_red;
+	settheme();
+}
+void
+switchToNorm(){
+	colors[SchemeNorm][0] = col_sec;
+	colors[SchemeNorm][1] = col_prim2;
+	colors[SchemeNorm][2] = col_sec;
+	colors[SchemeSel][0]  = col_sec;
+	colors[SchemeSel][1]  = col_prim;
+	colors[SchemeSel][2]  = col_sec;
+	settheme();
+}
 
 /* Gapps */
 static const unsigned int gappx = 20;
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "PROD" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -37,7 +61,7 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	{ "Firefox",  NULL,       NULL,       1 << 8,       1,           -1 },
 };
 
 /* layout(s) */
@@ -69,7 +93,9 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_prim, "-nf", col_sec, "-sb", col_sec, "-sf", col_prim, NULL };
 static const char *termcmd[]  = { "st", NULL };
-static const char *qutebrowsercmd[] = { "qutebrowser", NULL };
+static const char *webbrowsercmd[] = { "firefox", NULL };
+static const char *calc[] = { "calc", NULL };
+static const char *music[] = { "music", NULL };
 
 // Brightness control
 static const char *upBrightness[] = {"brightup", NULL};
@@ -80,14 +106,17 @@ static const char *casysTog[] = {"casys", "toggle", NULL};
 static const char *casysUp[] = {"casys", "up", NULL};
 static const char *casysDown[] = {"casys", "down", NULL};
 
-// EXIT MENU
+// MENUS
 static const char *exitmenu[] = {"exitmenu", NULL};
+static const char *dispmenu[] = {"cmonmgr", NULL};
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,             		XK_q,	   spawn,          {.v = termcmd } },
-	{ MODKEY,			XK_g,	   spawn,	   {.v = qutebrowsercmd } },
+	{ MODKEY,			XK_w,	   spawn,	   {.v = webbrowsercmd } },
+	{ MODKEY,			XK_c,	   spawn,	   {.v = calc } },
+	{ MODKEY,			XK_n,	   spawn,	   {.v = music } },
 	{ 0,			XF86XK_MonBrightnessUp,	spawn,	   {.v = upBrightness}},
 	{ 0,			XF86XK_MonBrightnessDown, spawn,   {.v = downBrightness}},
 	{ 0, 			XF86XK_AudioRaiseVolume, spawn,    {.v = casysUp}},
@@ -127,6 +156,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_9,                      8)
 //	{ MODKEY|ShiftMask,             XK_e,      quit,           {0} },
 	{ MODKEY|ShiftMask,             XK_e,      spawn,           {.v = exitmenu } },
+	{ MODKEY|ShiftMask,             XK_d,      spawn,           {.v = dispmenu } },
 };
 
 /* button definitions */
@@ -148,6 +178,8 @@ static Button buttons[] = {
 
 static const char *dwmfifo = "/home/victor/.local/utils/dwm.fifo";
 static Command commands[] = {
+	{ "NORMtheme",       switchToNorm,   {0} },
+	{ "REDtheme",        switchToRed,    {0} },
 	{ "dmenu",           spawn,          {.v = dmenucmd} },
 	{ "term",            spawn,          {.v = termcmd} },
 	{ "quit",            quit,           {0} },
