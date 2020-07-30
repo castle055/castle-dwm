@@ -3,56 +3,34 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 0;        /* border pixel of windows */
-static const unsigned int snap      = 30;       /* snap pixel */
-static const int showbar            = 1;        /* 0 means no bar */
-static const int topbar             = 1;        /* 0 means bottom bar */
+static unsigned int borderpx  = 0;        /* border pixel of windows */
+static unsigned int snap      = 30;       /* snap pixel */
+static int showbar            = 1;        /* 0 means no bar */
+static int topbar             = 1;        /* 0 means bottom bar */
 //static const char *fonts[]          = { "monospace:size=12" };
-static const char *fonts[]	    = { "Iosevka Term:style=Bold:size=12:antialias=true:autohint:true" };
+static const char *fonts[]	    = { "Iosevka Term:style=Bold:size=9:antialias=true:autohint:true" };
+//static const char *fonts[]	    = { "Fira Code:style=Bold:size=9:antialias=true:autohint:true" };
 static const char dmenufont[]       = "Iosevka Term:size=12";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
-static const char col_prim[]	    = "#06060a";
-static const char col_prim2[]	    = "#111326";
-static const char col_sec[]	    = "#fcae1e";
-static const char col_red[]	    = "#cc0000";
-static const char col_red2[]	    = "#150000";
-static const char col_red3[]	    = "#0a0000";
+static char normbgcolor[]     = "#111326";
+static char selbgcolor[]      = "#06060a";
+static char normbordercolor[] = "#fcae1e";
+static char selbordercolor[]  = "#fcae1e";
+static char normfgcolor[]     = "#fcae1e";
+static char selfgcolor[]      = "#fcae1e";
+//static char col_red[]	      = "#cc0000";
+//static char col_red2[]	      = "#150000";
+//static char col_red3[]	      = "#0a0000";
 static char *colors[][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm] = { col_sec,   col_prim2, col_sec },
-	[SchemeSel]  = { col_sec,   col_prim,  col_sec  },
+	[SchemeNorm] = { normfgcolor,   normbgcolor, normbordercolor},
+	[SchemeSel]  = { selfgcolor,   selbgcolor,    selbordercolor},
 };
-static int isRed = 0;
-void
-switchToRed(){
-	colors[SchemeNorm][0] = col_red;
-	colors[SchemeNorm][1] = col_red2;
-	colors[SchemeNorm][2] = col_red;
-	colors[SchemeSel][0]  = col_red;
-	colors[SchemeSel][1]  = col_red3;
-	colors[SchemeSel][2]  = col_red;
-	settheme();
-}
-void
-switchToNorm(){
-	colors[SchemeNorm][0] = col_sec;
-	colors[SchemeNorm][1] = col_prim2;
-	colors[SchemeNorm][2] = col_sec;
-	colors[SchemeSel][0]  = col_sec;
-	colors[SchemeSel][1]  = col_prim;
-	colors[SchemeSel][2]  = col_sec;
-	settheme();
-}
 
 /* Gapps */
 static const unsigned int gappx = 20;
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "PROD" };
+static const char *tags[] = { "\uf269", "\uf121", "3", "4", "5", "6", "7", "\uf008", "\uf274" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -62,12 +40,17 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 	{ "Firefox",  NULL,       NULL,       1 << 8,       1,           -1 },
+	{ "st",       NULL,       NULL,       1 << 1,       0,           -1 },
+	{ NULL,       "zathura",  NULL,       1 << 2,       0,           -1 },
+	{ "scratch",  NULL,       NULL,       0,            1,           -1 },
+	{ "Main",     NULL,       NULL,       0,            1,           -1 },
+	{ NULL,       NULL,       "Teensy",   0,            1,           -1 },
 };
 
 /* layout(s) */
-static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
-static const int nmaster     = 1;    /* number of clients in master area */
-static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
+static float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
+static int nmaster     = 1;    /* number of clients in master area */
+static int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
@@ -91,8 +74,9 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_prim, "-nf", col_sec, "-sb", col_sec, "-sf", col_prim, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", selbgcolor, "-nf", normfgcolor, "-sb", normfgcolor, "-sf", selbgcolor, NULL };
 static const char *termcmd[]  = { "st", NULL };
+static const char *scratchterm[]  = { "st", "-c", "scratch", "-t", "ScraTch", "-g", "110x27", NULL };
 static const char *webbrowsercmd[] = { "firefox", NULL };
 static const char *calc[] = { "calc", NULL };
 static const char *music[] = { "music", NULL };
@@ -114,6 +98,7 @@ static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,             		XK_q,	   spawn,          {.v = termcmd } },
+	{ MODKEY,             		XK_s,	   spawn,          {.v = scratchterm } },
 	{ MODKEY,			XK_w,	   spawn,	   {.v = webbrowsercmd } },
 	{ MODKEY,			XK_c,	   spawn,	   {.v = calc } },
 	{ MODKEY,			XK_n,	   spawn,	   {.v = music } },
@@ -178,8 +163,7 @@ static Button buttons[] = {
 
 static const char *dwmfifo = "/home/victor/.local/utils/dwm.fifo";
 static Command commands[] = {
-	{ "NORMtheme",       switchToNorm,   {0} },
-	{ "REDtheme",        switchToRed,    {0} },
+	{ "loadxrdb",        load_xresources,{0} },
 	{ "dmenu",           spawn,          {.v = dmenucmd} },
 	{ "term",            spawn,          {.v = termcmd} },
 	{ "quit",            quit,           {0} },
@@ -240,4 +224,23 @@ static Command commands[] = {
 	{ "toggletag7",      toggletag,      {.ui = 1 << 6} },
 	{ "toggletag8",      toggletag,      {.ui = 1 << 7} },
 	{ "toggletag9",      toggletag,      {.ui = 1 << 8} },
+};
+
+/*
+ * Xresources preferences to load at startup
+ */
+ResourcePref resources[] = {
+		{ "normbgcolor",        STRING,  &normbgcolor },
+		{ "normbordercolor",    STRING,  &normbordercolor },
+		{ "normfgcolor",        STRING,  &normfgcolor },
+		{ "selbgcolor",         STRING,  &selbgcolor },
+		{ "selbordercolor",     STRING,  &selbordercolor },
+		{ "selfgcolor",         STRING,  &selfgcolor },
+		{ "borderpx",          	INTEGER, &borderpx },
+		{ "snap",      		INTEGER, &snap },
+		{ "showbar",          	INTEGER, &showbar },
+		{ "topbar",          	INTEGER, &topbar },
+		{ "nmaster",          	INTEGER, &nmaster },
+		{ "resizehints",       	INTEGER, &resizehints },
+		{ "mfact",     	 	FLOAT,   &mfact },
 };

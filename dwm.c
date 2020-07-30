@@ -38,6 +38,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>
 #include <X11/Xutil.h>
+#include <X11/Xresource.h>
 #ifdef XINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif /* XINERAMA */
@@ -152,6 +153,19 @@ typedef struct {
 	const Arg arg;
 } Command;
 
+/* Xresources preferences */
+enum resource_type {
+	STRING = 0,
+	INTEGER = 1,
+	FLOAT = 2
+};
+
+typedef struct {
+	char *name;
+	enum resource_type type;
+	void *dst;
+} ResourcePref;
+
 /* function declarations */
 static void applyrules(Client *c);
 static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact);
@@ -192,7 +206,7 @@ static void grabkeys(void);
 static void incnmaster(const Arg *arg);
 static void keypress(XEvent *e);
 static void killclient(const Arg *arg);
-static void manage(Window w, XWindowAttributes *wa);
+static void manage(Window w, XWindowAttributes *wa, int urgent);
 static void mappingnotify(XEvent *e);
 static void maprequest(XEvent *e);
 static void monocle(Monitor *m);
@@ -214,7 +228,7 @@ static void sendmon(Client *c, Monitor *m);
 static void setclientstate(Client *c, long state);
 static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
-static void setgaps(const Arg *arg);
+//static void setgaps(const Arg *arg);
 static void setlayout(const Arg *arg);
 static void setmfact(const Arg *arg);
 static void settheme();	// This is mine for theme on the fly
@@ -252,10 +266,12 @@ static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
 static void centeredmaster(Monitor *m);
 static void centeredfloatingmaster(Monitor *m);
+static void load_xresources(void);
+static void resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst);
 
 /* variables */
 static const char broken[] = "broken";
-static char stext[4096];
+static char stext[8096];
 static int screen;
 static int sw, sh;           /* X display screen geometry width, height */
 static int bh, blw = 0;      /* bar geometry */
@@ -793,7 +809,7 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
 
 			text[i] = '\0';
 			w = TEXTW(text) - lrpad;
-			drw_text(drw, x, 0, w, bh, 0, text, 0);
+			drw_text(drw, x, bh/2, w, 0, 0, text, 0);
 
 			x += w;
 
@@ -862,6 +878,12 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
 					int ry2 = atoi(text + ++i);
 
 					drw_line(drw, rx1 + x, ry1, rx2 + x, ry2);
+				} else if (text[i] == 'p') {
+					int rx1 = atoi(text + ++i);
+					while (text[++i] != ',');
+					int ry1 = atoi(text + ++i);
+
+					drw_rect(drw, rx1, ry1, 1, 1, 1, 0);
 				} else if (text[i] == 'f') {
 					x += atoi(text + ++i);
 				}
@@ -1239,7 +1261,7 @@ killclient(const Arg *arg)
 }
 
 void
-manage(Window w, XWindowAttributes *wa)
+manage(Window w, XWindowAttributes *wa, int urgent)
 {
 	Client *c, *t = NULL;
 	Window trans = None;
@@ -1300,6 +1322,7 @@ manage(Window w, XWindowAttributes *wa)
 	arrange(c->mon);
 	XMapWindow(dpy, c->win);
 	focus(NULL);
+	seturgent(c, urgent);
 }
 
 void
@@ -1323,7 +1346,7 @@ maprequest(XEvent *e)
 	if (wa.override_redirect)
 		return;
 	if (!wintoclient(ev->window))
-		manage(ev->window, &wa);
+		manage(ev->window, &wa, 1);
 }
 
 void
@@ -1639,14 +1662,14 @@ scan(void)
 			|| wa.override_redirect || XGetTransientForHint(dpy, wins[i], &d1))
 				continue;
 			if (wa.map_state == IsViewable || getstate(wins[i]) == IconicState)
-				manage(wins[i], &wa);
+				manage(wins[i], &wa, 0);
 		}
 		for (i = 0; i < num; i++) { /* now the transients */
 			if (!XGetWindowAttributes(dpy, wins[i], &wa))
 				continue;
 			if (XGetTransientForHint(dpy, wins[i], &d1)
 			&& (wa.map_state == IsViewable || getstate(wins[i]) == IconicState))
-				manage(wins[i], &wa);
+				manage(wins[i], &wa, 0);
 		}
 		if (wins)
 			XFree(wins);
@@ -1743,15 +1766,15 @@ setfullscreen(Client *c, int fullscreen)
 	}
 }
 
-void
-setgaps(const Arg *arg)
-{
-	if ((arg->i == 0) || (selmon->gappx + arg->i < 0))
-		selmon->gappx = 0;
-	else
-		selmon->gappx += arg->i;
-	arrange(selmon);
-}
+//void
+//setgaps(const Arg *arg)
+//{
+//	if ((arg->i == 0) || (selmon->gappx + arg->i < 0))
+//		selmon->gappx = 0;
+//	else
+//		selmon->gappx += arg->i;
+//	arrange(selmon);
+//}
 
 void
 setlayout(const Arg *arg)
@@ -1800,7 +1823,6 @@ setmfact(const Arg *arg)
 void
 settheme(){
 	/* init appearance */
-	scheme = ecalloc(LENGTH(colors) + 1, sizeof(Clr *));
 	scheme[LENGTH(colors)] = drw_scm_create(drw, colors[0], 3);
 	for (int i = 0; i < LENGTH(colors); i++)
 		scheme[i] = drw_scm_create(drw, colors[i], 3);
@@ -1809,7 +1831,6 @@ settheme(){
 void
 setup(void)
 {
-	int i;
 	XSetWindowAttributes wa;
 	Atom utf8string;
 
@@ -1825,7 +1846,7 @@ setup(void)
 	if (!drw_fontset_create(drw, fonts, LENGTH(fonts)))
 		die("no fonts could be loaded.");
 	lrpad = drw->fonts->h;
-	bh = drw->fonts->h + 2;
+	bh = drw->fonts->h + 10;
 	updategeom();
 	/* init atoms */
 	utf8string = XInternAtom(dpy, "UTF8_STRING", False);
@@ -1883,6 +1904,19 @@ setup(void)
 void
 seturgent(Client *c, int urg)
 {
+	if(urg){
+		unsigned int i;
+		/* === This focuses windows when urgent ===*/
+		/* Useful when having rules for different clases to go to different tags */
+		for (i = 0; i < LENGTH(tags) && !((1 << i) & c->tags); i++);
+		if (i < LENGTH(tags)) {
+			const Arg a = {.ui = 1 << i};
+			selmon = c->mon;
+			view(&a);
+			focus(c);
+			restack(selmon);
+		}
+	}
 	XWMHints *wmh;
 
 	c->isurgent = urg;
@@ -2478,6 +2512,61 @@ zoom(const Arg *arg)
 	pop(c);
 }
 
+void
+resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst)
+{
+	char *sdst = NULL;
+	int *idst = NULL;
+	float *fdst = NULL;
+
+	sdst = dst;
+	idst = dst;
+	fdst = dst;
+
+	char fullname[256];
+	char *type;
+	XrmValue ret;
+
+	snprintf(fullname, sizeof(fullname), "%s.%s", "dwm", name);
+	fullname[sizeof(fullname) - 1] = '\0';
+
+	XrmGetResource(db, fullname, "*", &type, &ret);
+	if (!(ret.addr == NULL || strncmp("String", type, 64)))
+	{
+		switch (rtype) {
+		case STRING:
+			strcpy(sdst, ret.addr);
+			break;
+		case INTEGER:
+			*idst = strtoul(ret.addr, NULL, 10);
+			break;
+		case FLOAT:
+			*fdst = strtof(ret.addr, NULL);
+			break;
+		}
+	}
+}
+
+void
+load_xresources(void)
+{
+	Display *display;
+	char *resm;
+	XrmDatabase db;
+	ResourcePref *p;
+
+	display = XOpenDisplay(NULL);
+	resm = XResourceManagerString(display);
+	if (!resm)
+		return;
+
+	db = XrmGetStringDatabase(resm);
+	for (p = resources; p < resources + LENGTH(resources); p++)
+		resource_load(db, p->name, p->type, p->dst);
+	XCloseDisplay(display);
+	settheme();
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -2490,6 +2579,9 @@ main(int argc, char *argv[])
 	if (!(dpy = XOpenDisplay(NULL)))
 		die("dwm: cannot open display");
 	checkotherwm();
+	XrmInitialize();
+	scheme = ecalloc(LENGTH(colors) + 1, sizeof(Clr *));
+	load_xresources();
 	setup();
 #ifdef __OpenBSD__
 	if (pledge("stdio rpath proc exec", NULL) == -1)
