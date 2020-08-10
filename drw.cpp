@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <X11/Xlib.h>
-#include <X11/Xft/Xft.h>
 
 #include "drw.h"
 #include "util.h"
@@ -63,7 +62,7 @@ utf8decode(const char *c, long *u, size_t clen)
 Drw *
 drw_create(Display *dpy, int screen, Window root, unsigned int w, unsigned int h)
 {
-	Drw *drw = ecalloc(1, sizeof(Drw));
+	Drw *drw = (Drw*)ecalloc(1, sizeof(Drw));
 
 	drw->dpy = dpy;
 	drw->screen = screen;
@@ -146,7 +145,7 @@ xfont_create(Drw *drw, const char *fontname, FcPattern *fontpattern)
 		return NULL;
 	}
 
-	font = ecalloc(1, sizeof(Fnt));
+	font = (Fnt*)ecalloc(1, sizeof(Fnt));
 	font->xfont = xfont;
 	font->pattern = pattern;
 	font->h = xfont->ascent + xfont->descent;
@@ -214,7 +213,7 @@ drw_scm_create(Drw *drw, char *clrnames[], size_t clrcount)
 	Clr *ret;
 
 	/* need at least two colors for a scheme */
-	if (!drw || !clrnames || clrcount < 2 || !(ret = ecalloc(clrcount, sizeof(XftColor))))
+	if (!drw || !clrnames || clrcount < 2 || !(ret = (XftColor*)ecalloc(clrcount, sizeof(XftColor))))
 		return NULL;
 
 	for (i = 0; i < clrcount; i++)
@@ -439,7 +438,7 @@ drw_cur_create(Drw *drw, int shape)
 {
 	Cur *cur;
 
-	if (!drw || !(cur = ecalloc(1, sizeof(Cur))))
+	if (!drw || !(cur = (Cur*)ecalloc(1, sizeof(Cur))))
 		return NULL;
 
 	cur->cursor = XCreateFontCursor(drw->dpy, shape);

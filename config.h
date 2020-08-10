@@ -1,5 +1,4 @@
 #include <X11/XF86keysym.h>
-
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
@@ -22,36 +21,35 @@ static char selfgcolor[]      = "#fcae1e";
 //static char col_red3[]	      = "#0a0000";
 static char *colors[][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm] = { normfgcolor,   normbgcolor, normbordercolor},
-	[SchemeSel]  = { selfgcolor,   selbgcolor,    selbordercolor},
+	{ normfgcolor,   normbgcolor, normbordercolor},
+	{ selfgcolor,   selbgcolor,    selbordercolor}
 };
 
 /* Gapps */
 static const unsigned int gappx = 20;
 
 /* tagging */
-static const char *tags[] = { "\uf269", "\uf121", "3", "4", "5", "6", "7", "\uf008", "\uf274" };
+static const char *TAGS[] = {"\uf269", "\uf121", "3", "4", "5", "6", "7", "\uf008", "\uf274" };
 
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
+	/* class      instance    title       TAGS mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 	{ "Firefox",  NULL,       NULL,       1 << 8,       1,           -1 },
 	{ "st",       NULL,       NULL,       1 << 1,       0,           -1 },
 	{ NULL,       "zathura",  NULL,       1 << 2,       0,           -1 },
 	{ "scratch",  NULL,       NULL,       0,            1,           -1 },
 	{ "Main",     NULL,       NULL,       0,            1,           -1 },
-	{ NULL,       NULL,       "Teensy",   0,            1,           -1 },
+	{ NULL,       NULL,       "Teensy",   0,            1,           -1 }
 };
 
 /* layout(s) */
 static float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static int nmaster     = 1;    /* number of clients in master area */
 static int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
-
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[]=",      tile },    /* first entry is default */
@@ -124,8 +122,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[4]} },
 //	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
-	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
+	{ MODKEY,                       XK_0,      view,           {.ui = (unsigned int)~0 } },
+	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = (unsigned int)~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
@@ -163,7 +161,7 @@ static Button buttons[] = {
 
 static const char *dwmfifo = "/home/victor/.local/utils/dwm.fifo";
 static Command commands[] = {
-	{ "loadxrdb",        load_xresources,{0} },
+	{ "loadxrdb",        (void(*)(const Arg*))load_xresources,{0} },
 	{ "dmenu",           spawn,          {.v = dmenucmd} },
 	{ "term",            spawn,          {.v = termcmd} },
 	{ "quit",            quit,           {0} },
@@ -182,8 +180,8 @@ static Command commands[] = {
 	{ "setlayout-mono",  setlayout,      {.v = &layouts[2]} },
 	{ "togglelayout",    setlayout,      {0} },
 	{ "togglefloating",  togglefloating, {0} },
-	{ "viewall",         view,           {.ui = ~0} },
-	{ "tag",             tag,            {.ui = ~0} },
+	{ "viewall",         view,           {.ui = (unsigned int)~0} },
+	{ "tag",             tag,            {.ui = (unsigned int)~0} },
 	{ "focusmon+",       focusmon,       {.i = +1} },
 	{ "focusmon-",       focusmon,       {.i = -1} },
 	{ "tagmon+",         tagmon,         {.i = +1} },
@@ -229,7 +227,7 @@ static Command commands[] = {
 /*
  * Xresources preferences to load at startup
  */
-ResourcePref resources[] = {
+static ResourcePref resources[] = {
 		{ "normbgcolor",        STRING,  &normbgcolor },
 		{ "normbordercolor",    STRING,  &normbordercolor },
 		{ "normfgcolor",        STRING,  &normfgcolor },

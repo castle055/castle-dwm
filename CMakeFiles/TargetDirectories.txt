@@ -1,0 +1,4 @@
+/home/victor/repos/local/castle-dwm/CMakeFiles/rebuild_cache.dir
+/home/victor/repos/local/castle-dwm/CMakeFiles/edit_cache.dir
+/home/victor/repos/local/castle-dwm/CMakeFiles/castle-dwm.dir
+/home/victor/repos/local/castle-dwm/CMakeFiles/LibsModule.dir
