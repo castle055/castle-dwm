@@ -4,11 +4,11 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/victor/repos/local/castle-dwm/client.cpp" "/home/victor/repos/local/castle-dwm/CMakeFiles/LibsModule.dir/client.cpp.o"
-  "/home/victor/repos/local/castle-dwm/drw.cpp" "/home/victor/repos/local/castle-dwm/CMakeFiles/LibsModule.dir/drw.cpp.o"
-  "/home/victor/repos/local/castle-dwm/monitor.cpp" "/home/victor/repos/local/castle-dwm/CMakeFiles/LibsModule.dir/monitor.cpp.o"
-  "/home/victor/repos/local/castle-dwm/transient.cpp" "/home/victor/repos/local/castle-dwm/CMakeFiles/LibsModule.dir/transient.cpp.o"
-  "/home/victor/repos/local/castle-dwm/util.cpp" "/home/victor/repos/local/castle-dwm/CMakeFiles/LibsModule.dir/util.cpp.o"
+  "/home/victor/repos/public/castle-dwm/client.cpp" "/home/victor/repos/public/castle-dwm/CMakeFiles/LibsModule.dir/client.cpp.o"
+  "/home/victor/repos/public/castle-dwm/drw.cpp" "/home/victor/repos/public/castle-dwm/CMakeFiles/LibsModule.dir/drw.cpp.o"
+  "/home/victor/repos/public/castle-dwm/monitor.cpp" "/home/victor/repos/public/castle-dwm/CMakeFiles/LibsModule.dir/monitor.cpp.o"
+  "/home/victor/repos/public/castle-dwm/transient.cpp" "/home/victor/repos/public/castle-dwm/CMakeFiles/LibsModule.dir/transient.cpp.o"
+  "/home/victor/repos/public/castle-dwm/util.cpp" "/home/victor/repos/public/castle-dwm/CMakeFiles/LibsModule.dir/util.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

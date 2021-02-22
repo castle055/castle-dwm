@@ -6,17 +6,17 @@
 
 #IncludeRegexTransform: 
 
-/home/victor/repos/local/castle-dwm/castle-dwm.h
+/home/victor/repos/public/castle-dwm/castle-dwm.h
 X11/Xatom.h
 -
 X11/Xresource.h
 -
 drw.h
-/home/victor/repos/local/castle-dwm/drw.h
+/home/victor/repos/public/castle-dwm/drw.h
 config.h
-/home/victor/repos/local/castle-dwm/config.h
+/home/victor/repos/public/castle-dwm/config.h
 
-/home/victor/repos/local/castle-dwm/client.cpp
+/home/victor/repos/public/castle-dwm/client.cpp
 cmath
 -
 cstring
@@ -24,19 +24,33 @@ cstring
 X11/Xutil.h
 -
 castle-dwm.h
-/home/victor/repos/local/castle-dwm/castle-dwm.h
+/home/victor/repos/public/castle-dwm/castle-dwm.h
 util.h
-/home/victor/repos/local/castle-dwm/util.h
+/home/victor/repos/public/castle-dwm/util.h
 
-/home/victor/repos/local/castle-dwm/config.h
+/home/victor/repos/public/castle-dwm/config.h
 X11/XF86keysym.h
 -
 
-/home/victor/repos/local/castle-dwm/drw.h
+/home/victor/repos/public/castle-dwm/drw.cpp
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+X11/Xlib.h
+-
+drw.h
+/home/victor/repos/public/castle-dwm/drw.h
+util.h
+/home/victor/repos/public/castle-dwm/util.h
+
+/home/victor/repos/public/castle-dwm/drw.h
 X11/Xft/Xft.h
 -
 
-/home/victor/repos/local/castle-dwm/monitor.cpp
+/home/victor/repos/public/castle-dwm/monitor.cpp
 cstdio
 -
 cstdlib
@@ -46,9 +60,31 @@ X11/Xutil.h
 cstring
 -
 castle-dwm.h
-/home/victor/repos/local/castle-dwm/castle-dwm.h
+/home/victor/repos/public/castle-dwm/castle-dwm.h
 util.h
-/home/victor/repos/local/castle-dwm/util.h
+/home/victor/repos/public/castle-dwm/util.h
 
-/home/victor/repos/local/castle-dwm/util.h
+/home/victor/repos/public/castle-dwm/transient.cpp
+stdlib.h
+-
+unistd.h
+-
+X11/Xlib.h
+-
+X11/Xutil.h
+-
+
+/home/victor/repos/public/castle-dwm/util.cpp
+stdarg.h
+-
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+util.h
+/home/victor/repos/public/castle-dwm/util.h
+
+/home/victor/repos/public/castle-dwm/util.h
 
