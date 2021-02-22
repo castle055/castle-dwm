@@ -78,6 +78,7 @@ static const char *scratchterm[]  = { "st", "-c", "scratch", "-t", "ScraTch", "-
 static const char *webbrowsercmd[] = { "firefox", NULL };
 static const char *calc[] = { "calc", NULL };
 static const char *music[] = { "music", NULL };
+static const char *ytdl[] = { "yt-dl", NULL };
 
 // Brightness control
 static const char *upBrightness[] = {"brightup", NULL};
@@ -100,6 +101,7 @@ static Key keys[] = {
 	{ MODKEY,			XK_w,	   spawn,	   {.v = webbrowsercmd } },
 	{ MODKEY,			XK_c,	   spawn,	   {.v = calc } },
 	{ MODKEY,			XK_n,	   spawn,	   {.v = music } },
+	{ MODKEY,			XK_y,	   spawn,	   {.v = ytdl } },
 	{ 0,			XF86XK_MonBrightnessUp,	spawn,	   {.v = upBrightness}},
 	{ 0,			XF86XK_MonBrightnessDown, spawn,   {.v = downBrightness}},
 	{ 0, 			XF86XK_AudioRaiseVolume, spawn,    {.v = casysUp}},
