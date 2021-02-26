@@ -1,4 +1,7 @@
 
 CMakeFiles/
 
+*.a
+
 CMakeCache.txt
+

@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/castle-dwm.dir/dwm.cpp.o -o castle-dwm  libLibsModule.a -lX11 -lfontconfig -lXft -lXinerama 

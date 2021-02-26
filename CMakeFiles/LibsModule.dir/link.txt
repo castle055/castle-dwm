@@ -1,2 +1,0 @@
-/usr/bin/ar qc libLibsModule.a CMakeFiles/LibsModule.dir/drw.cpp.o CMakeFiles/LibsModule.dir/transient.cpp.o CMakeFiles/LibsModule.dir/util.cpp.o CMakeFiles/LibsModule.dir/client.cpp.o CMakeFiles/LibsModule.dir/monitor.cpp.o
-/usr/bin/ranlib libLibsModule.a
