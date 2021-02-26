@@ -40,9 +40,11 @@ static const Rule rules[] = {
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 	{ "Firefox",  NULL,       NULL,       1 << 8,       1,           -1 },
 	{ "st",       NULL,       NULL,       1 << 1,       0,           -1 },
+	{ "Thunderbird",NULL,     NULL,       1 << 8,       0,           -1 },
+	{ "jetbrains-idea",NULL,  NULL,       1 << 4,       0,           -1 },
 	{ NULL,       "zathura",  NULL,       1 << 2,       0,           -1 },
 	{ "scratch",  NULL,       NULL,       0,            1,           -1 },
-	{ "Main",     NULL,       NULL,       0,            1,           -1 },
+//	{ "Main",     NULL,       NULL,       0,            1,           -1 },
 	{ NULL,       NULL,       "Teensy",   0,            1,           -1 }
 };
 
@@ -79,6 +81,9 @@ static const char *webbrowsercmd[] = { "firefox", NULL };
 static const char *calc[] = { "calc", NULL };
 static const char *music[] = { "music", NULL };
 static const char *ytdl[] = { "yt-dl", NULL };
+static const char *xtogglemousemon[] = { "xtogglemousemon", NULL };
+static const char *bluemenu[] = { "st", "-c", "scratch", "-t", "ScraTch", "-g", "30x8-0+27", "-e", "bluemenu", NULL };
+static const char *mail[] = { "thunderbird", NULL };
 
 // Brightness control
 static const char *upBrightness[] = {"brightup", NULL};
@@ -102,12 +107,15 @@ static Key keys[] = {
 	{ MODKEY,			XK_c,	   spawn,	   {.v = calc } },
 	{ MODKEY,			XK_n,	   spawn,	   {.v = music } },
 	{ MODKEY,			XK_y,	   spawn,	   {.v = ytdl } },
+	{ MODKEY,			XK_b,	   spawn,	   {.v = bluemenu } },
+	{ MODKEY,			XK_m,	   spawn,	   {.v = mail } },
+	{ MODKEY,			XK_a,	   spawn,	   {.v = xtogglemousemon } },
 	{ 0,			XF86XK_MonBrightnessUp,	spawn,	   {.v = upBrightness}},
 	{ 0,			XF86XK_MonBrightnessDown, spawn,   {.v = downBrightness}},
 	{ 0, 			XF86XK_AudioRaiseVolume, spawn,    {.v = casysUp}},
 	{ 0, 			XF86XK_AudioLowerVolume, spawn,    {.v = casysDown}},
 	{ 0,			XF86XK_AudioMute, spawn,	   {.v = casysTog}},
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
+	{ MODKEY|ShiftMask,             XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
