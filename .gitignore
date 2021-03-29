@@ -1,7 +1,11 @@
 
+.idea/
 CMakeFiles/
+cmake-build-debug/
+Testing/
 
 *.a
 
 CMakeCache.txt
 
+*.cbp

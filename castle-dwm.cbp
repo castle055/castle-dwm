@@ -8,38 +8,38 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/home/victor/repos/local/castle-dwm"/>
+				<Option working_dir="/home/victor/repos/public/castle-dwm"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/home/victor/repos/local/castle-dwm"/>
+				<Option working_dir="/home/victor/repos/public/castle-dwm"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/home/victor/repos/local/castle-dwm"/>
+				<Option working_dir="/home/victor/repos/public/castle-dwm"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="castle-dwm">
-				<Option output="/home/victor/repos/local/castle-dwm/castle-dwm" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/victor/repos/local/castle-dwm"/>
+				<Option output="/home/victor/repos/public/castle-dwm/castle-dwm" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/victor/repos/public/castle-dwm"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -48,15 +48,15 @@
 					<Add directory="/usr/include/freetype2"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 castle-dwm"/>
-					<CompileFile command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 castle-dwm"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="castle-dwm/fast">
-				<Option output="/home/victor/repos/local/castle-dwm/castle-dwm" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/victor/repos/local/castle-dwm"/>
+				<Option output="/home/victor/repos/public/castle-dwm/castle-dwm" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/victor/repos/public/castle-dwm"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
@@ -65,15 +65,15 @@
 					<Add directory="/usr/include/freetype2"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 castle-dwm/fast"/>
-					<CompileFile command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 castle-dwm/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="LibsModule">
-				<Option output="/home/victor/repos/local/castle-dwm/libLibsModule.a" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/victor/repos/local/castle-dwm"/>
+				<Option output="/home/victor/repos/public/castle-dwm/libLibsModule.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/victor/repos/public/castle-dwm"/>
 				<Option object_output="./"/>
 				<Option type="2"/>
 				<Option compiler="gcc"/>
@@ -82,15 +82,15 @@
 					<Add directory="/usr/include/freetype2"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 LibsModule"/>
-					<CompileFile command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 LibsModule"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="LibsModule/fast">
-				<Option output="/home/victor/repos/local/castle-dwm/libLibsModule.a" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/victor/repos/local/castle-dwm"/>
+				<Option output="/home/victor/repos/public/castle-dwm/libLibsModule.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/victor/repos/public/castle-dwm"/>
 				<Option object_output="./"/>
 				<Option type="2"/>
 				<Option compiler="gcc"/>
@@ -99,50 +99,50 @@
 					<Add directory="/usr/include/freetype2"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 LibsModule/fast"/>
-					<CompileFile command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -f &quot;/home/victor/repos/local/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 LibsModule/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/victor/repos/public/castle-dwm/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/victor/repos/local/castle-dwm/castle-dwm.h">
+		<Unit filename="/home/victor/repos/public/castle-dwm/castle-dwm.h">
 			<Option target="LibsModule"/>
 		</Unit>
-		<Unit filename="/home/victor/repos/local/castle-dwm/client.cpp">
+		<Unit filename="/home/victor/repos/public/castle-dwm/client.cpp">
 			<Option target="LibsModule"/>
 		</Unit>
-		<Unit filename="/home/victor/repos/local/castle-dwm/client.h">
+		<Unit filename="/home/victor/repos/public/castle-dwm/client.h">
 			<Option target="LibsModule"/>
 		</Unit>
-		<Unit filename="/home/victor/repos/local/castle-dwm/config.h">
+		<Unit filename="/home/victor/repos/public/castle-dwm/config.h">
 			<Option target="LibsModule"/>
 		</Unit>
-		<Unit filename="/home/victor/repos/local/castle-dwm/drw.cpp">
+		<Unit filename="/home/victor/repos/public/castle-dwm/drw.cpp">
 			<Option target="LibsModule"/>
 		</Unit>
-		<Unit filename="/home/victor/repos/local/castle-dwm/drw.h">
+		<Unit filename="/home/victor/repos/public/castle-dwm/drw.h">
 			<Option target="LibsModule"/>
 		</Unit>
-		<Unit filename="/home/victor/repos/local/castle-dwm/dwm.cpp">
+		<Unit filename="/home/victor/repos/public/castle-dwm/dwm.cpp">
 			<Option target="castle-dwm"/>
 		</Unit>
-		<Unit filename="/home/victor/repos/local/castle-dwm/monitor.cpp">
+		<Unit filename="/home/victor/repos/public/castle-dwm/monitor.cpp">
 			<Option target="LibsModule"/>
 		</Unit>
-		<Unit filename="/home/victor/repos/local/castle-dwm/monitor.h">
+		<Unit filename="/home/victor/repos/public/castle-dwm/monitor.h">
 			<Option target="LibsModule"/>
 		</Unit>
-		<Unit filename="/home/victor/repos/local/castle-dwm/transient.cpp">
+		<Unit filename="/home/victor/repos/public/castle-dwm/transient.cpp">
 			<Option target="LibsModule"/>
 		</Unit>
-		<Unit filename="/home/victor/repos/local/castle-dwm/util.cpp">
+		<Unit filename="/home/victor/repos/public/castle-dwm/util.cpp">
 			<Option target="LibsModule"/>
 		</Unit>
-		<Unit filename="/home/victor/repos/local/castle-dwm/util.h">
+		<Unit filename="/home/victor/repos/public/castle-dwm/util.h">
 			<Option target="LibsModule"/>
 		</Unit>
-		<Unit filename="/home/victor/repos/local/castle-dwm/CMakeLists.txt">
+		<Unit filename="/home/victor/repos/public/castle-dwm/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>
