@@ -2,7 +2,7 @@
 #include <cstdlib>
 /* See LICENSE file for copyright and license details. */
 
-static unsigned short ctl_port= 33855;
+static unsigned short ctl_port= 33850;
 
 /* appearance */
 static unsigned int borderpx  = 0;        /* border pixel of windows */
