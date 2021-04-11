@@ -2,6 +2,8 @@
 #include <cstdlib>
 /* See LICENSE file for copyright and license details. */
 
+static unsigned short ctl_port= 33855;
+
 /* appearance */
 static unsigned int borderpx  = 0;        /* border pixel of windows */
 static unsigned int snap      = 30;       /* snap pixel */
