@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.17)
 
 project(castle-dwm)
 
@@ -19,9 +19,12 @@ add_library(LibsModule
 	monitor.cpp
 )
 include_directories (/usr/include/freetype2)
+include_directories (/home/victor/repos/public/program-shell/include)
+find_library (PROGRAM_SHELL program_shell PATHS /home/victor/repos/public/program-shell/cmake-build-debug/src)
 
 add_executable(castle-dwm dwm.cpp)
-target_link_libraries(castle-dwm LibsModule)
-target_link_libraries(castle-dwm X11 fontconfig Xft Xinerama)
+target_link_libraries(castle-dwm PRIVATE LibsModule)
+target_link_libraries(castle-dwm PUBLIC X11 fontconfig Xft Xinerama)
+target_link_libraries(castle-dwm PUBLIC "${PROGRAM_SHELL}")
 
 add_definitions(-DXINERAMA)
