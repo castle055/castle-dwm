@@ -33,6 +33,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+#include <program_shell.h>
 
 #ifdef XINERAMA
 #include <X11/extensions/Xinerama.h>
@@ -1049,6 +1050,7 @@ void spawn(const Arg *arg) {
     if (arg->v == dmenucmd)
         dmenumon[0] = '0' + selmon->num;
     if (fork() == 0) {
+        program_shell::stop();
         if (dpy)
             close(ConnectionNumber(dpy));
         setsid();
@@ -1418,7 +1420,27 @@ void load_xresources() {
     XCloseDisplay(display);
     settheme();
 }
+
+int test(terminal::term_stream& stream, int argc, const char* argv[]) {
+	stream << "hello world!";
+	return 0;
+}
+
+int restart(terminal::term_stream& stream, int argc, const char* argv[]) {
+    program_shell::stop();
+	quit(nullptr);
+	return 0;
+}
+
 int main(int argc, char *argv[]) {
+	program_shell::set_var("TERM_HEADER", "[C-DWM Shell v0.1]");
+	program_shell::set_var("TERM_PROMPT", "$ > ");
+	program_shell::add_cmd("test", test);
+	program_shell::add_cmd("restart", restart);
+    int err = program_shell::init(ctl_port);
+    if (err <0) {
+        fprintf(stderr, "[program_shell::init] err: %d", err);
+    }
     if (argc == 2 && !strcmp("-v", argv[1]))
         die("dwm-VERSION");
     else if (argc != 1)
