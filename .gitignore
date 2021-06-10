@@ -13,3 +13,5 @@ CMakeCache.txt
 castle-dwm
 
 cmake_install.cmake
+
+Makefile

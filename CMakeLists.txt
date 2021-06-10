@@ -19,12 +19,10 @@ add_library(LibsModule
 	monitor.cpp
 )
 include_directories (/usr/include/freetype2)
-include_directories (/home/victor/repos/public/program-shell/include)
-find_library (PROGRAM_SHELL program_shell PATHS /home/victor/repos/public/program-shell/cmake-build-debug/src)
 
 add_executable(castle-dwm dwm.cpp)
 target_link_libraries(castle-dwm PRIVATE LibsModule)
 target_link_libraries(castle-dwm PUBLIC X11 fontconfig Xft Xinerama)
-target_link_libraries(castle-dwm PUBLIC "${PROGRAM_SHELL}")
+target_link_libraries(castle-dwm PUBLIC program_shell)
 
 add_definitions(-DXINERAMA)
