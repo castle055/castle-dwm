@@ -91,6 +91,7 @@ static const char *mail[] = { "thunderbird", NULL };
 static const char *cecon[] = { "cecon-plot", NULL };
 static const char *mc_launch[] = { "mc-launch", NULL };
 static const char *screenshot[] = { "screenshot", NULL };
+static const char *gitkraken[] = { "gitkraken", NULL };
 
 // Brightness control
 static const char *upBrightness[] = {"brightup", NULL};
@@ -119,6 +120,7 @@ static Key keys[] = {
 	{ MODKEY,			XK_m,	   spawn,	   {.v = mail } },
 	{ MODKEY,			XK_a,	   spawn,	   {.v = xtogglemousemon } },
 	{ MODKEY,			XK_v,	   spawn,	   {.v = cecon } },
+	{ MODKEY,			XK_g,	   spawn,	   {.v = gitkraken } },
 	{ MODKEY|ShiftMask,		XK_m,	   spawn,	   {.v = mc_launch } },
 	{ 0,				XK_Print,  spawn,	   {.v = screenshot } },
 	{ 0,			XF86XK_MonBrightnessUp,	spawn,	   {.v = upBrightness}},
@@ -180,8 +182,8 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
 
-static const char *dwmfifo = std::getenv("HOME") + "/.local/utils/dwm.fifo";
-//static const char *dwmfifo = "/home/castle/.local/utils/dwm.fifo";
+//static const char *dwmfifo = std::strcat(std::getenv("HOME"), "/.local/utils/dwm.fifo");
+static const char *dwmfifo = "/home/castle/.local/utils/dwm.fifo";
 static Command commands[] = {
 	{ "loadxrdb",        (void(*)(const Arg*))load_xresources,{0} },
 	{ "dmenu",           spawn,          {.v = dmenucmd} },
