@@ -12,7 +12,7 @@ static int topbar             = 1;        /* 0 means bottom bar */
 //static const char *fonts[]          = { "monospace:size=12" };
 static const char *fonts[]	    = { "Iosevka Term:style=Bold:size=9:antialias=true:autohint:true" };
 //static const char *fonts[]	    = { "Fira Code:style=Bold:size=9:antialias=true:autohint:true" };
-static const char dmenufont[]       = "Iosevka Term:size=12";
+static const char dmenufont[]       = "Iosevka Term:size=14";
 static char normbgcolor[]     = "#111326";
 static char selbgcolor[]      = "#06060a";
 static char normbordercolor[] = "#fcae1e";
