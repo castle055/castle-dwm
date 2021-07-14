@@ -92,6 +92,7 @@ static const char *cecon[] = { "cecon-plot", NULL };
 static const char *mc_launch[] = { "mc-launch", NULL };
 static const char *screenshot[] = { "screenshot", NULL };
 static const char *gitkraken[] = { "gitkraken", NULL };
+static const char *fa4_iconlist[] = { "fa4_iconlist", NULL };
 
 // Brightness control
 static const char *upBrightness[] = {"brightup", NULL};
@@ -122,6 +123,7 @@ static Key keys[] = {
 	{ MODKEY,			XK_v,	   spawn,	   {.v = cecon } },
 	{ MODKEY,			XK_g,	   spawn,	   {.v = gitkraken } },
 	{ MODKEY|ShiftMask,		XK_m,	   spawn,	   {.v = mc_launch } },
+	{ MODKEY|ShiftMask,		XK_i,	   spawn,	   {.v = fa4_iconlist } },
 	{ 0,				XK_Print,  spawn,	   {.v = screenshot } },
 	{ 0,			XF86XK_MonBrightnessUp,	spawn,	   {.v = upBrightness}},
 	{ 0,			XF86XK_MonBrightnessDown, spawn,   {.v = downBrightness}},
