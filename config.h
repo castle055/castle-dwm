@@ -40,15 +40,15 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       TAGS mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       1,           -1 },
-	{ "st",       NULL,       NULL,       1 << 1,       0,           -1 },
-	{ "Thunderbird",NULL,     NULL,       1 << 8,       0,           -1 },
-	{ "jetbrains-idea",NULL,  NULL,       1 << 4,       0,           -1 },
-	{ NULL,       "zathura",  NULL,       1 << 2,       0,           -1 },
-	{ "scratch",  NULL,       NULL,       0,            1,           -1 },
-//	{ "Main",     NULL,       NULL,       0,            1,           -1 },
-	{ NULL,       NULL,       "Teensy",   0,            1,           -1 }
+	{ "Gimp",     NULL,       NULL,       0,            1,           -1,        0 },
+	{ "Firefox",  NULL,       NULL,       1 << 8,       1,           -1,        0 },
+	{ "st",       NULL,       NULL,       1 << 1,       0,           -1,        0 },
+	{ "Thunderbird",NULL,     NULL,       1 << 8,       0,           -1,        0 },
+	{ "jetbrains-idea",NULL,  NULL,       1 << 4,       0,           -1,        1 },
+	{ NULL,       "zathura",  NULL,       1 << 2,       0,           -1,        0 },
+	{ "scratch",  NULL,       NULL,       0,            1,           -1,        0 },
+//	{ "Main",     NULL,       NULL,       0,            1,           -1,        0 },
+	{ NULL,       NULL,       "Teensy",   0,            1,           -1,        0 }
 };
 
 /* layout(s) */

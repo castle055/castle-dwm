@@ -80,6 +80,7 @@ typedef struct {
     unsigned int tags;
     int isfloating;
     int monitor;
+    bool ignoretransient;
 } Rule;
 typedef struct {
     const char *name;
@@ -106,6 +107,7 @@ public:
     int bw, oldbw;
     unsigned int tags;
     int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;
+    bool ignoretransient;
     Client *next;
     Client *snext;
     Monitor *mon;
