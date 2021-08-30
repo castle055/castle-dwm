@@ -25,6 +25,7 @@ void Client::applyrules() {
             && (!r->class_ || strstr(class_, r->class_))
             && (!r->instance || strstr(instance, r->instance))) {
             isfloating = r->isfloating;
+            ignoretransient = r->ignoretransient;
             tags |= r->tags;
             for (m = mons; m && m->num != r->monitor; m = m->next);
             if (m)

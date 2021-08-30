@@ -735,7 +735,7 @@ void propertynotify(XEvent *e) {
             default:
                 break;
             case XA_WM_TRANSIENT_FOR:
-                if (!c->isfloating && (XGetTransientForHint(dpy, c->win, &trans)) &&
+                if (!c->ignoretransient && !c->isfloating && (XGetTransientForHint(dpy, c->win, &trans)) &&
                     (c->isfloating = (wintoclient(trans)) != NULL))
                     arrange(c->mon);
                 break;
