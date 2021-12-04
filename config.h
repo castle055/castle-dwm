@@ -186,8 +186,6 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
 
-//static const char *dwmfifo = std::strcat(std::getenv("HOME"), "/.local/utils/dwm.fifo");
-static const char *dwmfifo = "/home/castle/.local/utils/dwm.fifo";
 static Command commands[] = {
 	{ "loadxrdb",        (void(*)(const Arg*))load_xresources,{0} },
 	{ "dmenu",           spawn,          {.v = dmenucmd} },

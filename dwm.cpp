@@ -62,7 +62,6 @@ Clr **scheme;
 Drw *drw;
 Monitor *mons, *selmon;
 Window root, wmcheckwin;
-static int fifofd;
 
 /*static void (*handler[LASTEvent]) (XEvent *) = {
 	[ButtonPress] = buttonpress,
@@ -197,7 +196,6 @@ void cleanup(void) {
     XSync(dpy, False);
     XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
     XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
-    close(fifofd);
 }
 void cleanupmon(Monitor *mon) {
     Monitor *m;
@@ -350,23 +348,6 @@ Monitor* dirtomon(int dir) {
     else
         for (m = mons; m->next != selmon; m = m->next);
     return m;
-}
-void dispatchcmd(void) {
-    int i;
-    char buf[BUFSIZ];
-    ssize_t n;
-
-    n = read(fifofd, buf, sizeof(buf) - 1);
-    if (n == -1)
-        die("Failed to read() from DWM fifo %s:", dwmfifo);
-    buf[n] = '\0';
-    buf[strcspn(buf, "\n")] = '\0';
-    for (i = 0; i < LENGTH(commands); i++) {
-        if (strcmp(commands[i].name, buf) == 0) {
-            commands[i].func(&commands[i].arg);
-            break;
-        }
-    }
 }
 void drawbars(void) {
     Monitor *m;
@@ -824,36 +805,14 @@ void resizemouse(const Arg *arg) {
     }
 }
 void run(void) {
-    XEvent ev;
-    fd_set rfds;
-    int n;
-    int dpyfd, maxfd;
-    /* main event loop */
-    XSync(dpy, False);
-    dpyfd = ConnectionNumber(dpy);
-    maxfd = fifofd;
-    if (dpyfd > maxfd)
-        maxfd = dpyfd;
-    maxfd++;
-    while (running) {
-        FD_ZERO(&rfds);
-        FD_SET(fifofd, &rfds);
-        FD_SET(dpyfd, &rfds);
-        n = select(maxfd, &rfds, NULL, NULL, NULL);
-        if (n > 0) {
-            if (FD_ISSET(fifofd, &rfds))
-                dispatchcmd();
-            if (FD_ISSET(dpyfd, &rfds))
-                while (XCheckIfEvent(dpy, &ev, (int (*)(Display *, XEvent *, XPointer)) evpredicate, NULL)) {
-                    //die("aye");
-                    if (handler[ev.type])
-                        handler[ev.type](&ev);
-                    //int v = 0;
-                    //for(Monitor* m = mons; m; m = m->next, v++)
-                    //fprintf(stderr, "LE MONS: %d\n", v);
-                } /* call handler */
-        }
-    }
+  XEvent ev;
+  /* main event loop */
+  XSync(dpy, False);
+  while (running) {
+    XNextEvent(dpy, &ev);
+    if (handler[ev.type])
+      handler[ev.type](&ev);
+  } /* call handler */
 }
 void scan(void) {
     unsigned int i, num;
@@ -1036,10 +995,6 @@ void setup() {
     XSelectInput(dpy, root, wa.event_mask);
     grabkeys();
     focusNULL();
-
-    fifofd = open(dwmfifo, O_RDWR | O_NONBLOCK);
-    if (fifofd < 0)
-        die("Failed to open() DWM fifo %s - %d:", dwmfifo, fifofd);
 }
 void sigchld(int unused) {
     if (signal(SIGCHLD, sigchld) == SIG_ERR)
