@@ -15,3 +15,7 @@ castle-dwm
 cmake_install.cmake
 
 Makefile
+
+.cmake/
+
+*.iml
