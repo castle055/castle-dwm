@@ -14,6 +14,7 @@
 
 namespace state {
   extern std::fstream log_file;
+  extern std::fstream key_nav_file;
   
   extern const char broken[];
   
@@ -26,7 +27,7 @@ namespace state {
   extern monitor_t *mons, *selmon;
   extern Window root, wmcheckwin;
   extern Clr **scheme;
-  extern int sw, sh, bh, blw;
+  extern int sw, sh, bar_height, blw;
   extern int lrpad;
   extern unsigned int numlockmask;
   extern Cur *cursor[CurLast];
@@ -37,10 +38,10 @@ namespace state {
     extern bool accepting;
     extern std::string current_path;
     extern key_nav_target* current;
-    extern key_nav_target root;
   }
   namespace config {
     extern std::string log_file;
+    extern std::string key_nav_file;
     extern unsigned short ctl_port;
     extern unsigned int borderpx;
     extern unsigned int snap;

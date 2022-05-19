@@ -17,7 +17,7 @@ namespace ops::x11 {
   long get_state(Window w);
   int get_text_prop(Window w, Atom atom, std::string& text);
   Window create_barwin(int x, int y, int w);
-  void update_bars();
+  void destroy_barwin(Window barwin);
   void update_client_list();
   int update_geometry();
   void update_numlock_mask();

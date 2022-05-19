@@ -20,9 +20,9 @@ namespace ops::monitor {
   monitor_t *win_to_mon(Window w);
   
   namespace bar {
-    void draw_all_bars();
-    int draw_statusbar(monitor_t* monitor, int bh, char *stext);
-    void draw_bar(monitor_t* monitor);
+//    void draw_all_bars();
+//    int draw_statusbar(monitor_t* monitor, int bar_height, char *stext);
+//    void draw_bar(monitor_t* monitor);
   }
 }
 

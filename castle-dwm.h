@@ -6,6 +6,7 @@
 #include "ops/event_ops.h"
 #include "ops/x11_ops.h"
 #include "ops/control_ops.h"
+#include "ops/bar_ops.h"
 #include "state/state.h"
 
 /* function declarations */

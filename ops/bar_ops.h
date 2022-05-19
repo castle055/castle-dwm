@@ -6,9 +6,11 @@
 #define CASTLE_DWM_BAR_OPS_H
 
 namespace ops::bar {
-
-  void init_where_needed();
+  void init();
+  void cleanup();
   
+  void init_where_needed();
+  void update_all();
 }
 
 

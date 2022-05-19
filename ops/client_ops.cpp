@@ -14,6 +14,7 @@
 #include "log_ops.h"
 #include "x11_ops.h"
 #include "../state/state.h"
+#include "bar_ops.h"
 
 using namespace ops;
 
@@ -80,10 +81,10 @@ int client::apply_size_hints(client_t* client, int *X, int *Y, int *W, int *H, i
     if (*Y + *H + 2 * client->bw <= m->wy)
       *Y = m->wy;
   }
-  if (*H < state::bh)
-    *H = state::bh;
-  if (*W < state::bh)
-    *W = state::bh;
+  if (*H < state::bar_height)
+    *H = state::bar_height;
+  if (*W < state::bar_height)
+    *W = state::bar_height;
   if (state::config::resizehints || client->isfloating || !client->mon->lt[client->mon->sellt]->arrange_) {
     /* see last two sentences in ICCCM 4.1.2.3 */
     baseismin = client->basew == client->minw && client->baseh == client->minh;
@@ -180,7 +181,7 @@ void client::focus(client_t* client) {
     XDeleteProperty(state::dpy, state::root, state::netatom[NetActiveWindow]);
   }
   state::selmon->sel = c;
-  monitor::bar::draw_all_bars();
+  bar::update_all();
 }
 Atom client::get_atom_prop(client_t* client, Atom prop) {
   int di;
@@ -508,7 +509,7 @@ void client::manage(Window w, XWindowAttributes *wa, int urgent) {
   c->x = MAX(c->x, c->mon->mx);
   /* only fix client y-offset, if the client center might cover the bar */
   c->y = MAX(c->y, ((c->mon->by == c->mon->my) && (c->x + (c->w / 2) >= c->mon->wx)
-                    && (c->x + (c->w / 2) < c->mon->wx + c->mon->ww)) ? state::bh : c->mon->my);
+                    && (c->x + (c->w / 2) < c->mon->wx + c->mon->ww)) ? state::bar_height : c->mon->my);
   c->bw = state::config::borderpx;
   
   log::debug("[manage]");

@@ -13,15 +13,19 @@
 
 using namespace state;
 
-#define DEVEL FALSE
+#define DEVEL false
 
 #if DEVEL
 unsigned short config::ctl_port= 33851;
+#define MODKEY Mod4Mask
+std::string config::log_file = "/dev/stdout";
 #else
 unsigned short config::ctl_port= 33850;
+#define MODKEY Mod1Mask
+std::string config::log_file = "/home/castle/.cache/castle_dwm1.log";
 #endif
 
-std::string config::log_file = "/home/castle/.cache/castle_dwm1.log";
+std::string config::key_nav_file = "/home/castle/.config/corium/keynav.yaml";
 
 /* appearance */
 unsigned int config::borderpx  = 0;        /* border pixel of windows */
@@ -110,7 +114,6 @@ void config::setup_default_layouts() {
 };
 
 /* key definitions */
-#define MODKEY Mod1Mask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \

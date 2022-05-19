@@ -16,6 +16,7 @@
 #include "castle-dwm.h"
 #include "util.h"
 #include "ops/log_ops.h"
+#include "ops/file_ops.h"
 
 /* function implementations */
 //===== Main functions =====
@@ -55,9 +56,10 @@ void run() {
   XSync(state::dpy, False);
   while (state::running) {
     while (XCheckIfEvent(state::dpy, &ev, (int (*)(Display *, XEvent *, XPointer)) evpredicate, NULL)) {
-      ops::log::debug("EVENT: %d", ev.type);
-      if (ops::event::handler[ev.type])
+      if (ops::event::handler[ev.type]) {
+        ops::log::debug("EVENT: %d", ev.type);
         ops::event::handler[ev.type](&ev);
+      }
     } /* call handler */
   }
 }
@@ -94,7 +96,7 @@ void setup() {
   if (!drw_fontset_create(state::drw, &config::fonts[0], config::fonts.size()))
     die("no fonts could be loaded.");
   state::lrpad = state::drw->fonts->h;
-  state::bh = state::drw->fonts->h + 10;
+  state::bar_height = state::drw->fonts->h + 10;
   ops::x11::update_geometry();
   /* init atoms */
   ops::log::debug("[setup] dpy: %x, drw: %x", state::dpy, state::drw);
@@ -122,7 +124,7 @@ void setup() {
   settheme();
   
   /* init bars */
-  ops::x11::update_bars();
+  ops::bar::init_where_needed();
   ops::x11::update_status();
   /* supporting window for NetWMCheck */
   state::wmcheckwin = XCreateSimpleWindow(state::dpy, state::root, 0, 0, 1, 1, 0, 0, 0);
@@ -226,6 +228,7 @@ int restart(terminal::term_stream& stream, int argc, const char* argv[]) {
 
 int main(int argc, char *argv[]) {
   state::log_file.open(state::config::log_file.c_str(), std::ios::app);
+  ops::file::reload_key_nav();
   
   ops::log::info("Starting CDWM...");
   program_shell::set_var("TERM_HEADER", "[C-DWM Shell v0.1]");

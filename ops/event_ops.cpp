@@ -11,11 +11,14 @@
 #include "monitor_ops.h"
 #include "x11_ops.h"
 #include "log_ops.h"
+#include "bar_ops.h"
+#include "keynav_ops.h"
 
 using namespace ops;
 
 void (*event::handler[])(XEvent *) = {
-    nullptr,nullptr,
+    nullptr,
+    nullptr,
     handlers::keypress,
     nullptr, // TODO - this one is keyrelease
     handlers::buttonpress,
@@ -107,13 +110,13 @@ void ops::event::handlers::configurenotify(XEvent *e) {
     state::sw = ev->width;
     state::sh = ev->height;
     if (x11::update_geometry() || dirty) {
-      drw_resize(state::drw, state::sw, state::bh);
-      x11::update_bars();
+      drw_resize(state::drw, state::sw, state::bar_height);
+      bar::init_where_needed();
       for (m = state::mons; m; m = m->next) {
         for (c = m->clients; c; c = c->next)
           if (c->isfullscreen)
             ops::client::resize_client(c, m->mx, m->my, m->mw, m->mh);
-        XMoveResizeWindow(state::dpy, m->barwin, m->wx, m->by, m->ww, state::bh);
+        XMoveResizeWindow(state::dpy, m->barwin, m->wx, m->by, m->ww, state::bar_height);
       }
       client::focus(nullptr);
       monitor::arrange(nullptr);
@@ -197,7 +200,7 @@ void ops::event::handlers::expose(XEvent *e) {
   XExposeEvent *ev = &e->xexpose;
   
   if (ev->count == 0 && (m = monitor::win_to_mon(ev->window)))
-    ops::monitor::bar::draw_bar(m);
+    ops::bar::update_all();
 }
 void ops::event::handlers::focusin(XEvent *e) {
   XFocusChangeEvent *ev = &e->xfocus;
@@ -212,39 +215,9 @@ void ops::event::handlers::keypress(XEvent *e) {
   XKeyEvent *ev;
   
   ev = &e->xkey;
+  if (keynav::process(ev)) return;
+  
   keysym = XKeycodeToKeysym(state::dpy, (KeyCode) ev->keycode, 0);
-  
-  // Check if KeyNav trigger
-  if (keysym == state::config::key_nav::trigger.keysym
-      && CLEANMASK(state::config::key_nav::trigger.mod) == CLEANMASK(ev->state)) {
-    state::key_nav::accepting = true;
-    return;
-  }
-  
-  // Navigate ig KeyNav active
-  if (state::key_nav::accepting) {
-    if (keysym == XK_Escape) {
-      state::key_nav::accepting = false;
-      state::key_nav::current = &state::key_nav::root;
-      state::key_nav::current_path = XKeysymToString(state::config::key_nav::trigger.keysym);
-    }
-    
-    auto next_target = state::key_nav::current->map.find(keysym);
-    if (next_target != state::key_nav::current->map.end()) {
-      key_nav_target* target = next_target->second;
-      switch (target->type) {
-        case NAV_DIR:
-          state::key_nav::current = target;
-          state::key_nav::current_path.append(" ");
-          state::key_nav::current_path.append(XKeysymToString(keysym));
-          break;
-        case APPLICATION:
-          log::info("running app...");
-          break;
-      }
-    }
-    return;
-  }
   
   // If not KeyNav, check normal shortcuts
   for (i = 0; i < state::config::keys.size(); i++)
@@ -257,8 +230,10 @@ void ops::event::handlers::mappingnotify(XEvent *e) {
   XMappingEvent *ev = &e->xmapping;
   
   XRefreshKeyboardMapping(ev);
-  if (ev->request == MappingKeyboard)
+  if (ev->request == MappingKeyboard) {
     x11::grab_keys();
+    keynav::reset();
+  }
 }
 void ops::event::handlers::maprequest(XEvent *e) {
   log::debug("<maprequest>");
@@ -309,13 +284,13 @@ void ops::event::handlers::propertynotify(XEvent *e) {
         break;
       case XA_WM_HINTS:
         ops::client::update_wm_hints(c);
-        monitor::bar::draw_all_bars();
+        bar::update_all();
         break;
     }
     if (ev->atom == XA_WM_NAME || ev->atom == state::netatom[NetWMName]) {
       ops::client::update_title(c);
       if (c == c->mon->sel)
-        ops::monitor::bar::draw_bar(c->mon);
+        bar::update_all();
     }
     if (ev->atom == state::netatom[NetWMWindowType])
       ops::client::update_window_type(c);

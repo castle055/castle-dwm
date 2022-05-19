@@ -17,6 +17,7 @@ namespace ops::control {
   void movemouse(const Arg *arg);
   void setlayout(const Arg *arg);
   void setmfact(const Arg *arg);
+  void spawn_exec(const Arg *arg);
   void spawn(const Arg *arg);
   void tag(const Arg *arg);
   void tagmon(const Arg *arg);

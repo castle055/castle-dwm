@@ -4,8 +4,10 @@
 
 #include <fstream>
 #include "state.h"
+#include "../ops/keynav_ops.h"
 
 std::fstream state::log_file;
+std::fstream state::key_nav_file;
 
 const char state::broken[] = "broken";
 
@@ -18,13 +20,12 @@ Drw *state::drw;
 monitor_t *state::mons, *state::selmon;
 Window state::root, state::wmcheckwin;
 Clr **state::scheme;
-int state::sw, state::sh, state::bh, state::blw;
+int state::sw, state::sh, state::bar_height, state::blw;
 int state::lrpad;
 unsigned int state::numlockmask;
 Cur *state::cursor[CurLast];
 bool state::running = true;
 
 bool state::key_nav::accepting = false;
-std::string state::key_nav::current_path = XKeysymToString(state::config::key_nav::trigger.keysym);
-key_nav_target state::key_nav::root;
-key_nav_target* state::key_nav::current = &state::key_nav::root;
+std::string state::key_nav::current_path = "|>";
+key_nav_target* state::key_nav::current = &ops::keynav::root;

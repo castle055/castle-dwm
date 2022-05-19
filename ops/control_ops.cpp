@@ -12,6 +12,7 @@
 #include "event_ops.h"
 #include "../util.h"
 #include "log_ops.h"
+#include "bar_ops.h"
 
 #include <unistd.h>
 
@@ -202,7 +203,7 @@ void control::setlayout(const Arg *arg) {
   if (state::selmon->sel)
     monitor::arrange(state::selmon);
   else
-    monitor::bar::draw_bar(state::selmon);
+    bar::update_all();
 }
 /* arg > 1.0 will set mfact absolutely */
 void control::setmfact(const Arg *arg) {
@@ -221,6 +222,21 @@ void control::setmfact(const Arg *arg) {
     if (state::selmon->tagset[state::selmon->seltags] & 1 << i)
       state::selmon->pertag->mfacts[(i + 1) % (state::config::TAGS.size() + 1)] = f;
   monitor::arrange(state::selmon);
+}
+void control::spawn_exec(const Arg *arg) {
+  if (fork() == 0) {
+    program_shell::stop();
+    if (state::dpy)
+      close(ConnectionNumber(state::dpy));
+    setsid();
+    const char* cmd = (const char*)arg->v;
+    log::debug("[spawn] running cmd: %s", cmd);
+    std::system(cmd);
+    log::debug("[spawn] running cmd: %s", cmd);
+    fprintf(stderr, "dwm: execvp %s", cmd);
+    perror(" failed");
+    exit(EXIT_SUCCESS);
+  }
 }
 void control::spawn(const Arg *arg) {
   if (state::config::cmds.find((char*)arg->v) == state::config::cmds.end()) {
@@ -261,7 +277,7 @@ void control::togglebar(const Arg *arg) {
     if (state::selmon->tagset[state::selmon->seltags] & 1 << i)
       state::selmon->pertag->showbars[(i + 1) % (state::config::TAGS.size() + 1)] = state::selmon->showbar;
   monitor::update_bar_pos(state::selmon);
-  XMoveResizeWindow(state::dpy, state::selmon->barwin, state::selmon->wx, state::selmon->by, state::selmon->ww, state::bh);
+  XMoveResizeWindow(state::dpy, state::selmon->barwin, state::selmon->wx, state::selmon->by, state::selmon->ww, state::bar_height);
   monitor::arrange(state::selmon);
 }
 void control::togglefloating(const Arg *arg) {

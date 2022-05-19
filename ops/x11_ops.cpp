@@ -11,6 +11,7 @@
 #include "../state/state.h"
 #include "../util.h"
 #include "log_ops.h"
+#include "bar_ops.h"
 
 #include <X11/extensions/Xinerama.h>
 
@@ -225,7 +226,7 @@ void x11::update_status() {
   monitor_t *m;
   if (!x11::get_text_prop(state::root, XA_WM_NAME, state::stext))
     state::stext = "dwm-VERSION";
-  monitor::bar::draw_all_bars();
+  bar::update_all();
 }
 Window x11::create_barwin(int x, int y, int w) {
   XSetWindowAttributes wa = {
@@ -234,32 +235,16 @@ Window x11::create_barwin(int x, int y, int w) {
       .override_redirect = True
   };
   XClassHint ch = {"dwm", "dwm"};
-  Window barwin = XCreateWindow(state::dpy, state::root, x, y, w, state::bh, 0, DefaultDepth(state::dpy, state::screen),
-                            CopyFromParent, DefaultVisual(state::dpy, state::screen),
+  Window barwin = XCreateWindow(state::dpy, state::root, x, y, w, state::bar_height, 0, DefaultDepth(state::dpy, state::screen),
+                                CopyFromParent, DefaultVisual(state::dpy, state::screen),
                             CWOverrideRedirect | CWBackPixmap | CWEventMask, &wa);
   XDefineCursor(state::dpy, barwin, state::cursor[CurNormal]->cursor);
   XMapRaised(state::dpy, barwin);
   XSetClassHint(state::dpy, barwin, &ch);
   return barwin;
 }
-void x11::update_bars() {
-  monitor_t *m;
-  XSetWindowAttributes wa = {
-      .background_pixmap = ParentRelative,
-      .event_mask = ButtonPressMask | ExposureMask,
-      .override_redirect = True
-  };
-  XClassHint ch = {"dwm", "dwm"};
-  for (m = state::mons; m; m = m->next) {
-    if (m->barwin)
-      continue;
-    m->barwin = XCreateWindow(state::dpy, state::root, m->wx, m->by, m->ww, state::bh, 0, DefaultDepth(state::dpy, state::screen),
-                              CopyFromParent, DefaultVisual(state::dpy, state::screen),
-                              CWOverrideRedirect | CWBackPixmap | CWEventMask, &wa);
-    XDefineCursor(state::dpy, m->barwin, state::cursor[CurNormal]->cursor);
-    XMapRaised(state::dpy, m->barwin);
-    XSetClassHint(state::dpy, m->barwin, &ch);
-  }
+void x11::destroy_barwin(Window barwin) {
+  XDestroyWindow(state::dpy, barwin);
 }
 void x11::grab_keys() {
   update_numlock_mask();
