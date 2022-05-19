@@ -6,6 +6,7 @@
 #include <program_shell.h>
 
 #include "util.h"
+#include "ops/log_ops.h"
 
 void *
 ecalloc(size_t nmemb, size_t size)
@@ -13,7 +14,7 @@ ecalloc(size_t nmemb, size_t size)
 	void *p;
 
 	if (!(p = calloc(nmemb, size)))
-		die("calloc:");
+        ops::log::error("[ecalloc] calloc failed");
 	return p;
 }
 
