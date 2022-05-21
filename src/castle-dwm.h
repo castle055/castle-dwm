@@ -18,4 +18,4 @@ extern void sigchld(int unused);
 extern void load_xresources();
 extern void resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst);
 
-#include "config.h"
+#include "../config.h"

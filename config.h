@@ -1,15 +1,15 @@
 #include <X11/XF86keysym.h>
 #include <cstdlib>
-#include "state/state.h"
+#include "src/state/state.h"
 
 #ifndef CDWM_CONFIG
 #define CDWM_CONFIG
 
-#include "layouts/monocle.h"
-#include "layouts/tile.h"
-#include "layouts/centeredmaster.h"
+#include "src/layouts/monocle.h"
+#include "src/layouts/tile.h"
+#include "src/layouts/centeredmaster.h"
 
-#include "ops/log_ops.h"
+#include "src/ops/log_ops.h"
 
 using namespace state;
 
