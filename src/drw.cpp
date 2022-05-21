@@ -439,7 +439,7 @@ drw_cur_create(Drw *drw, int shape)
 	Cur *cur;
 
 	if (!drw || !(cur = (Cur*)ecalloc(1, sizeof(Cur))))
-		return NULL;
+		return nullptr;
 
 	cur->cursor = XCreateFontCursor(drw->dpy, shape);
 
