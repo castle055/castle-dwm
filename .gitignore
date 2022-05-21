@@ -10,7 +10,7 @@ CMakeCache.txt
 
 *.cbp
 
-castle-dwm
+build/.build/
 
 cmake_install.cmake
 
