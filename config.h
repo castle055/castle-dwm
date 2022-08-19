@@ -22,7 +22,7 @@ std::string config::log_file = "/dev/stdout";
 #else
 unsigned short config::ctl_port= 33850;
 #define MODKEY Mod1Mask
-std::string config::log_file = "/home/castle/.cache/castle_dwm1.log";
+std::string config::log_file = "/home/castle/.cache/castle-dwm.log";
 #endif
 
 std::string config::key_nav_file = "/home/castle/.config/corium/keynav.yaml";
