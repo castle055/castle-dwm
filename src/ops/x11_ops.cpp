@@ -228,20 +228,32 @@ void x11::update_status() {
     state::stext = "dwm-VERSION";
   bar::update_all();
 }
-Window x11::create_barwin(int x, int y, int w) {
+
+Window create_window(
+    const char* name,
+    const char* clas,
+    int x,
+    int y,
+    int w,
+    int h
+) {
   XSetWindowAttributes wa = {
       .background_pixmap = ParentRelative,
       .event_mask = ButtonPressMask | ExposureMask,
       .override_redirect = True
   };
-  XClassHint ch = {"dwm", "dwm"};
-  Window barwin = XCreateWindow(state::dpy, state::root, x, y, w, state::bar_height, 0, DefaultDepth(state::dpy, state::screen),
-                                CopyFromParent, DefaultVisual(state::dpy, state::screen),
-                            CWOverrideRedirect | CWBackPixmap | CWEventMask, &wa);
-  XDefineCursor(state::dpy, barwin, state::cursor[CurNormal]->cursor);
-  XMapRaised(state::dpy, barwin);
-  XSetClassHint(state::dpy, barwin, &ch);
-  return barwin;
+  XClassHint ch = {const_cast<char *>(name), const_cast<char *>(clas)};
+  Window win = XCreateWindow(state::dpy, state::root, x, y, w, h, 0, DefaultDepth(state::dpy, state::screen),
+                             CopyFromParent, DefaultVisual(state::dpy, state::screen),
+                                CWOverrideRedirect | CWBackPixmap | CWEventMask, &wa);
+  XDefineCursor(state::dpy, win, state::cursor[CurNormal]->cursor);
+  XMapRaised(state::dpy, win);
+  XSetClassHint(state::dpy, win, &ch);
+  return win;
+}
+
+Window x11::create_barwin(int x, int y, int w) {
+  return create_window("dwm", "bar", x, y, w, state::bar_height);
 }
 void x11::destroy_barwin(Window barwin) {
   XDestroyWindow(state::dpy, barwin);

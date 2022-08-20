@@ -65,11 +65,14 @@ std::vector<Rule> config::rules = {
 	 */
 	/* class      instance    title       TAGS mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1},
-	{ "firefox",  NULL,       NULL,       1 << 0,       0,            1},
-	{ "st",       NULL,       NULL,       1 << 1,       0,           -1},
+	{ "firefox",  NULL,       NULL,       1 << 0,       0,           -1},
+	{ "google-chrome",  NULL,       NULL,       1 << 7,       0,           1},
+	{ "st",       NULL,       NULL,       1 << 1,       0,            2},
+	{ "emacs",  NULL,       NULL,       1 << 1,       0,            1},
 	{ "Thunderbird",NULL,     NULL,       1 << 8,       0,            0},
 	{ "jetbrains-idea",NULL,  NULL,       1 << 4,       0,            1},
   { "jetbrains-clion",NULL,  NULL,      1 << 5,       0,            1},
+  { "jetbrains-webstorm",NULL,  NULL,      1 << 6,       0,            1},
 	{ NULL,       "zathura",  NULL,       1 << 2,       0,            2},
 	{ "scratch",  NULL,       NULL,       0,            1,           -1},
 //	{ "Main",     NULL,       NULL,       0,            1,           -1},
@@ -97,19 +100,28 @@ std::vector<Layout> config::layouts = {
 unsigned int config::default_layout = 2;
 
 //        number of monitors ------+---+
+// UPDATE ASCII REPRESENTATION HERE
 std::array<std::array<DefaultLayout, 9>, 3> config::default_layouts;
-//    /* MON 0 */ {2,0,2,2,2,2,2,2,2},
-//    /* MON 1 */ {2,0,2,2,2,2,2,2,2},
-//    /* MON 2 */ {3,2,2,2,2,2,2,2,2},
+//    /* MON 0 */ {2,2,2,2,2,2,2,1,2},
+//    /* MON 1 */ {2,2,2,2,2,2,2,1,2},
+//    /* MON 2 */ {3,3,2,2,2,2,2,1,2},
 void config::setup_default_layouts() {
   static bool done = false;
   if (done) return;
   done = true;
   ops::log::debug("[setup_default_layouts]");
   
-  default_layouts[0][1] = {.ltidx = 0, .nmaster = 1};
-  default_layouts[1][1] = {.ltidx = 0, .nmaster = 1};
+//  default_layouts[0][1] = {.ltidx = 0, .nmaster = 1};
+//  default_layouts[1][1] = {.ltidx = 0, .nmaster = 1};
+
+  // ADD LAYOUT DEFINITIONS HERE
+  //  Workspace 8 on EVERY monitor is FLOATING LAYOUT
+  default_layouts[0][7] = {.ltidx = 1, .nmaster = 1};
+  default_layouts[1][7] = {.ltidx = 1, .nmaster = 1};
+  default_layouts[2][7] = {.ltidx = 1, .nmaster = 1};
+  //  Workspaces 1 & 2 on monitor 2 are CENTERED FLOATING MASTER LAYOUT with multiple masters
   default_layouts[2][0] = {.ltidx = 3, .nmaster = 4};
+  default_layouts[2][1] = {.ltidx = 3, .nmaster = 7};
   ops::log::debug("![setup_default_layouts]");
 };
 

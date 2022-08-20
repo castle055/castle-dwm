@@ -19,3 +19,7 @@ Makefile
 .cmake/
 
 *.iml
+
+.ccls-cache/
+
+castle-dwm
