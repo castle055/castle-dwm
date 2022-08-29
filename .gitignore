@@ -19,3 +19,9 @@ Makefile
 .cmake/
 
 *.iml
+
+.ninja_deps
+
+.ninja_log
+
+build.ninja

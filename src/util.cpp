@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <program_shell.h>
+//#include <program_shell.h>
 
 #include "util.h"
 #include "ops/log_ops.h"
@@ -33,6 +33,6 @@ die(const char *fmt, ...) {
 		fputc('\n', stderr);
 	}
 
-	program_shell::stop();
+	//program_shell::stop();
 	exit(1);
 }

@@ -2,7 +2,7 @@
 // Created by castle on 3/24/22.
 //
 
-#include <program_shell.h>
+//#include <program_shell.h>
 #include "control_ops.h"
 
 #include "../state/state.h"
@@ -225,7 +225,7 @@ void control::setmfact(const Arg *arg) {
 }
 void control::spawn_exec(const Arg *arg) {
   if (fork() == 0) {
-    program_shell::stop();
+    //program_shell::stop();
     if (state::dpy)
       close(ConnectionNumber(state::dpy));
     setsid();
@@ -243,7 +243,7 @@ void control::spawn(const Arg *arg) {
     log::error("[spawn] No such command: %s", (char*)arg->v);
   }
   if (fork() == 0) {
-    program_shell::stop();
+    //program_shell::stop();
     if (state::dpy)
       close(ConnectionNumber(state::dpy));
     setsid();
