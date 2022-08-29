@@ -25,3 +25,5 @@ Makefile
 .ninja_log
 
 build.ninja
+
+castle-dwm
