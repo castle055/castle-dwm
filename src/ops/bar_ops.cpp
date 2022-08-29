@@ -158,7 +158,7 @@ int draw_statusbar(int width) {
           while (text[++i] != ',');
           int ry1 = atoi(text + ++i);
           
-          drw_rect(state::drw, rx1, ry1, 1, 1, 1, 0);
+          drw_rect(state::drw, rx1, ry1, 2, 2, 1, 0);
         } else if (text[i] == 'f') {
           x += atoi(text + ++i);
         }
