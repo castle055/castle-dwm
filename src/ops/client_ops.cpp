@@ -502,11 +502,12 @@ void client::manage(Window w, XWindowAttributes *wa, int urgent) {
   }
   
   log::debug("[manage]");
+  c->x += c->mon->mw;
   if (c->x + WIDTH(c) > c->mon->mx + c->mon->mw)
     c->x = c->mon->mx + c->mon->mw - WIDTH(c);
   if (c->y + HEIGHT(c) > c->mon->my + c->mon->mh)
     c->y = c->mon->my + c->mon->mh - HEIGHT(c);
-  c->x = MAX(c->x, c->mon->mx);
+  //c->x = MAX(c->x, c->mon->mx);
   /* only fix client y-offset, if the client center might cover the bar */
   c->y = MAX(c->y, ((c->mon->by == c->mon->my) && (c->x + (c->w / 2) >= c->mon->wx)
                     && (c->x + (c->w / 2) < c->mon->wx + c->mon->ww)) ? state::bar_height : c->mon->my);
