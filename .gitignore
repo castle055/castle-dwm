@@ -26,4 +26,8 @@ Makefile
 
 build.ninja
 
+.ccls-cache/
+
 castle-dwm
+
+castle-dwm-stable

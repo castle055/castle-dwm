@@ -11,6 +11,7 @@
 #include <string>
 #include <array>
 #include <unordered_map>
+#include "../ui/status_bar/workspaces.hpp"
 
 /* enums */
 enum {
@@ -51,7 +52,7 @@ typedef struct {
   void (*func)(const Arg *arg);
   
   const Arg arg;
-} Button;
+} MouseButton;
 typedef struct {
   unsigned int mod;
   KeySym keysym;
@@ -137,6 +138,17 @@ struct client_t {
   Window win;
 };
 
+struct monitor_bar_t {
+  bool init = false;
+  int wlen = 290;
+  
+  // Workspaces
+  WorkspacesState* wstate = nullptr;
+  Workspaces* workspaces = nullptr;
+  cydui::layout::Layout* wlay = nullptr;
+  cydui::window::CWindow* wwin = nullptr;
+};
+
 struct monitor_t {
   char ltsymbol[16];
   float mfact = 0;
@@ -158,6 +170,8 @@ struct monitor_t {
   Window barwin = 0;
   const Layout *lt[2];
   Pertag *pertag = nullptr;
+  
+  monitor_bar_t bar;
 };
 
 enum KeyNavTargetType {

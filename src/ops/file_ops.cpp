@@ -52,7 +52,7 @@ key_nav_target* parse_map_node(YAML::Node node) {
       }
       log::info("[parse] item: %s - %s", it->first.as<std::string>().c_str(),
                 it->second["desc"].as<std::string>().c_str());
-    } catch (YAML::InvalidNode e) { }
+    } catch (YAML::InvalidNode& e) { }
   }
   return kt;
 }

@@ -54,13 +54,16 @@ void monitor::load_default_layout(monitor_t* monitor) {
   strncpy(monitor->ltsymbol, monitor->lt[monitor->sellt]->symbol, sizeof monitor->ltsymbol);
   
   log::debug("[load_default_layout] loading tag layouts");
-  for (int i = 0; i <= state::config::TAGS.size(); ++i) {
+  monitor->pertag->ltidxs.resize(state::config::TAGS.size()+1);
+  monitor->pertag->sellts.resize(state::config::TAGS.size()+1);
+  monitor->pertag->nmasters.resize(state::config::TAGS.size()+1);
+  for (size_t i = 0; i < state::config::TAGS.size(); ++i) {
 //    if (tagset[seltags] & 1 << i) {
     int l1 = state::config::default_layouts[monitor->num][i].ltidx;
-    if (l1 < 0) l1 = state::config::default_layout;
+    if (l1 < 0) l1 = (int)state::config::default_layout;
     monitor->pertag->ltidxs[(i + 1) % (state::config::TAGS.size() + 1)][monitor->sellt] = &state::config::layouts[l1];
     monitor->pertag->sellts[(i + 1) % (state::config::TAGS.size() + 1)] = monitor->sellt;
-    monitor->pertag->nmasters[(i + 1) % (state::config::TAGS.size() + 1)] = state::config::default_layouts[monitor->num][i].nmaster;
+    monitor->pertag->nmasters[(i+ 1) % (state::config::TAGS.size() + 1)] = state::config::default_layouts[monitor->num][i].nmaster;
   }
   log::debug("Done loading default layouts for monitor [%d]", monitor->num);
 }
@@ -346,7 +349,7 @@ monitor_t *monitor::create_mon() {
   
   size_t tags_len = state::config::TAGS.size();
   log::debug("[create_mon] Configuring monitor tags");
-  for (i = 0; i <= tags_len; i++) {
+  for (i = 0; i < tags_len; i++) {
     log::debug("[create_mon] Configuring monitor tag [%d]", i);
     m->pertag->nmasters.resize(tags_len);
     m->pertag->nmasters[i] = m->nmaster;

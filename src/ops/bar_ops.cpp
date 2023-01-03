@@ -5,8 +5,11 @@
 #include "bar_ops.h"
 #include "x11_ops.h"
 #include "monitor_ops.h"
+#include "control_ops.h"
 #include "../state/state.h"
 #include "../util.h"
+#include <cyd_ui/cydui.hpp>
+#include "../ui/status_bar/workspaces.hpp"
 
 #include <string>
 
@@ -14,17 +17,47 @@ using namespace ops;
 
 std::unordered_map<int, bar_t> bars;
 
+static void init_bar(monitor_t* mon) {
+  monitor_bar_t* bar = &(mon->bar);
+  
+  bar->wstate       = new WorkspacesState();
+  auto* state       = bar->wstate;
+  bar->workspaces   = new Workspaces(bar->wstate, { }, ___inner(Workspaces, t, { }));
+  bar->wlay         = new cydui::layout::Layout(bar->workspaces);
+  bar->wwin         = cydui::window::create(
+    bar->wlay,
+    "dwm", "dwm",
+    mon->wx + 0, mon->by + 1,
+    //1, 13,
+    280, 24,
+    true
+  );
+  
+  bar->wstate->selected_workspaces.on_change([bar, mon]() {
+    const Arg a {.ui = (unsigned int)bar->wstate->selected_workspaces.val()};
+    ops::control::view(&a);
+  });
+  
+  //m->barwin = win->win_ref->xwin;//x11::create_barwin(m->wx, m->by, m->ww);
+  mon->barwin = x11::create_barwin(mon->wx+mon->bar.wlen, mon->by, mon->ww-mon->bar.wlen);
+  bars[mon->num] = {
+    mon->ww,
+    mon->barwin,
+    0,
+  };
+  
+  bar->init = true;
+}
+
 void bar::init_where_needed() {
   monitor_t* m;
   for (m = state::mons; m; m = m->next) {
     if (m->barwin)
       continue;
-    m->barwin = x11::create_barwin(m->wx, m->by, m->ww);
-    bars[m->num] = {
-        m->ww,
-        m->barwin,
-        0,
-    };
+    if (m->bar.init)
+      continue;
+    
+    init_bar(m);
   }
 }
 
@@ -182,19 +215,20 @@ int draw_statusbar(int width) {
 }
 
 void update_bar(monitor_t* monitor, bar_t bar) {
-  int x, w, tw = 0;
+  int x = 0, w, tw = 0;
   int boxs = state::drw->fonts->h / 9;
   int boxw = state::drw->fonts->h / 6 + 2;
   unsigned int i, occ = 0, urg = 0;
   client_t *c;
   
   // Draws rectangle over all bar so that there are no glitches
+  XLockDisplay(state::dpy);
   drw_setscheme(state::drw, state::scheme[monitor == state::selmon ? SchemeSel : SchemeNorm]);
-  drw_rect(state::drw, 0, 0, monitor->ww, state::bar_height, 1, 1);
+  drw_rect(state::drw, x, 0, monitor->ww-monitor->bar.wlen, state::bar_height, 1, 1);
   
   /* draw status first so it can be overdrawn by TAGS later */
   //if (m == selmon || 1) { /* status is only drawn on selected monitor */
-  tw = monitor->ww - draw_statusbar(monitor->ww);
+  tw = monitor->ww - draw_statusbar(monitor->ww - monitor->bar.wlen);
   //if (m == selmon) { /* status is only drawn on selected monitor */
   //	drw_setscheme(drw, scheme[SchemeNorm]);
   //	tw = TEXTW(stext) - lrpad + 2; /* 2px right padding */
@@ -206,18 +240,16 @@ void update_bar(monitor_t* monitor, bar_t bar) {
     if (c->isurgent)
       urg |= c->tags;
   }
-  
-  x = 0;
-  for (i = 0; i < state::config::TAGS.size(); i++) {
-    w = TEXTW(state::config::TAGS[i]);
-    drw_setscheme(state::drw, state::scheme[monitor->tagset[monitor->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
-    drw_text(state::drw, x, 3, w - 4, state::bar_height - 6, state::lrpad / 2 - 2, state::config::TAGS[i].c_str(), urg & 1 << i);
-    if (occ & 1 << i)
-      drw_rect(state::drw, x + boxs, boxs, boxw, boxw,
-               monitor == state::selmon && state::selmon->sel && state::selmon->sel->tags & 1 << i,
-               urg & 1 << i);
-    x += w;
-  }
+  //for (i = 0; i < state::config::TAGS.size(); i++) {
+  //  w = TEXTW(state::config::TAGS[i]);
+  //  drw_setscheme(state::drw, state::scheme[monitor->tagset[monitor->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
+  //  drw_text(state::drw, x, 3, w - 4, state::bar_height - 6, state::lrpad / 2 - 2, state::config::TAGS[i].c_str(), urg & 1 << i);
+  //  if (occ & 1 << i)
+  //    drw_rect(state::drw, x + boxs, boxs, boxw, boxw,
+  //             monitor == state::selmon && state::selmon->sel && state::selmon->sel->tags & 1 << i,
+  //             urg & 1 << i);
+  //  x += w;
+  //}
   w = state::blw = TEXTW_CSTR(monitor->ltsymbol);
   drw_setscheme(state::drw, state::scheme[SchemeNorm]);
   x = drw_text(state::drw, x, 3, w, state::bar_height - 6, state::lrpad / 2, monitor->ltsymbol, 0);
@@ -258,6 +290,10 @@ void update_bar(monitor_t* monitor, bar_t bar) {
     }
   }
   drw_map(state::drw, bar.win, 0, 0, bar.width, state::bar_height);
+  
+  XUnlockDisplay(state::dpy);
+  monitor->bar.wstate->occupied_workspaces.set((unsigned int)monitor->bar.wwin->win_ref->xwin,(int)occ);
+  monitor->bar.wstate->selected_workspaces.set((unsigned int)monitor->bar.wwin->win_ref->xwin,(int)(monitor->tagset[monitor->seltags]));
 }
 
 void bar::update_all() {

@@ -57,7 +57,7 @@ void run() {
   while (state::running) {
     while (XCheckIfEvent(state::dpy, &ev, (int (*)(Display *, XEvent *, XPointer)) evpredicate, NULL)) {
       if (ops::event::handler[ev.type]) {
-        ops::log::debug("EVENT: %d", ev.type);
+        //ops::log::debug("EVENT: %d", ev.type);
         ops::event::handler[ev.type](&ev);
       }
     } /* call handler */
@@ -76,7 +76,7 @@ void run() {
 void settheme() {
   /* init appearance */
   state::scheme[config::colors.size()] = drw_scm_create(state::drw, (char**)&(config::colors[0][0]), 3);
-  for (int i = 0; i < config::colors.size(); i++)
+  for (size_t i = 0; i < config::colors.size(); i++)
     state::scheme[i] = drw_scm_create(state::drw, (char**)&(config::colors[i][0]), 3);
 }
 void setup() {
@@ -131,7 +131,7 @@ void setup() {
   XChangeProperty(state::dpy, state::wmcheckwin, state::netatom[NetWMCheck], XA_WINDOW, 32,
                   PropModeReplace, (unsigned char *) &state::wmcheckwin, 1);
   XChangeProperty(state::dpy, state::wmcheckwin, state::netatom[NetWMName], utf8string, 8,
-                  PropModeReplace, (unsigned char *) "dwm", 3);
+                  PropModeReplace, (unsigned char *) "castle-dwm", 10);
   XChangeProperty(state::dpy, state::root, state::netatom[NetWMCheck], XA_WINDOW, 32,
                   PropModeReplace, (unsigned char *) &state::wmcheckwin, 1);
   /* EWMH support per view */
@@ -229,6 +229,8 @@ void load_xresources() {
 int main(int argc, char *argv[]) {
   state::log_file.open(state::config::log_file.c_str(), std::ios::app);
   ops::file::reload_key_nav();
+  
+  XInitThreads();
   
   ops::log::info("Starting CDWM...");
   //program_shell::set_var("TERM_HEADER", "[C-DWM Shell v0.1]");
