@@ -190,7 +190,7 @@ void load_xresources() {
   char *resm;
   XrmDatabase db;
   
-  display = state::dpy;//XOpenDisplay(nullptr);
+  display = XOpenDisplay(nullptr);
   resm = XResourceManagerString(display);
   if (!resm)
     return;
