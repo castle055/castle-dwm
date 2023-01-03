@@ -16,7 +16,7 @@ include_directories (/usr/include/freetype2)
 #add_library(b_config config.h)
 target_sources(castle-dwm PRIVATE config.h)
 target_link_libraries(castle-dwm PUBLIC X11 fontconfig Xft Xinerama)
-target_link_libraries(castle-dwm PUBLIC program_shell)
+#target_link_libraries(castle-dwm PUBLIC program_shell)
 target_link_libraries(castle-dwm PUBLIC yaml-cpp)
 
 add_definitions(-DXINERAMA)

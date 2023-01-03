@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
-#include <program_shell.h>
+//#include <program_shell.h>
 
 #include <X11/extensions/Xinerama.h>
 
@@ -202,39 +202,39 @@ void load_xresources() {
   settheme();
 }
 
-int print_tree(terminal::term_stream& stream, int argc, const char* argv[]) {
-  int mi = 0;
-  for(monitor_t* m = state::mons; m; m = m->next, mi++) {
-    if (m == state::selmon) stream << "SELECTED ";
-    stream << "monitor_t " << std::to_string(mi) << ": bar: " << std::to_string(m->showbar) << "\n\r";
-    for (client_t* c = m->stack; c; c = c->snext) {
-      if (c == m->sel) stream << "* ";
-      stream << "\tStack Client " << c->name << "\n\r";
-    }
-    stream << "\n\r";
-    for (client_t* c = m->clients; c; c = c->next) {
-      if (c == m->sel) stream << "* ";
-      stream << "\tClient " << c->name << "\n\r";
-    }
-  }
-  return 0;
-}
+//int print_tree(terminal::term_stream& stream, int argc, const char* argv[]) {
+  //int mi = 0;
+  //for(monitor_t* m = state::mons; m; m = m->next, mi++) {
+    //if (m == state::selmon) stream << "SELECTED ";
+    //stream << "monitor_t " << std::to_string(mi) << ": bar: " << std::to_string(m->showbar) << "\n\r";
+    //for (client_t* c = m->stack; c; c = c->snext) {
+      //if (c == m->sel) stream << "* ";
+      //stream << "\tStack Client " << c->name << "\n\r";
+    //}
+    //stream << "\n\r";
+    //for (client_t* c = m->clients; c; c = c->next) {
+      //if (c == m->sel) stream << "* ";
+      //stream << "\tClient " << c->name << "\n\r";
+    //}
+  //}
+  //return 0;
+//}
 
-int restart(terminal::term_stream& stream, int argc, const char* argv[]) {
-  program_shell::stop();
-  ops::control::quit(nullptr);
-  return 0;
-}
+//int restart(terminal::term_stream& stream, int argc, const char* argv[]) {
+  //program_shell::stop();
+  //ops::control::quit(nullptr);
+  //return 0;
+//}
 
 int main(int argc, char *argv[]) {
   state::log_file.open(state::config::log_file.c_str(), std::ios::app);
   ops::file::reload_key_nav();
   
   ops::log::info("Starting CDWM...");
-  program_shell::set_var("TERM_HEADER", "[C-DWM Shell v0.1]");
-  program_shell::set_var("TERM_PROMPT", "$ > ");
-  program_shell::add_cmd("print_tree", print_tree);
-  program_shell::add_cmd("restart", restart);
+  //program_shell::set_var("TERM_HEADER", "[C-DWM Shell v0.1]");
+  //program_shell::set_var("TERM_PROMPT", "$ > ");
+  //program_shell::add_cmd("print_tree", print_tree);
+  //program_shell::add_cmd("restart", restart);
   //int err = program_shell::init(config::ctl_port);
   //if (err <0) {
   //  fprintf(stderr, "[program_shell::init] err: %d", err);

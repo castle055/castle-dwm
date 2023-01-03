@@ -20,6 +20,12 @@ Makefile
 
 *.iml
 
+.ninja_deps
+
+.ninja_log
+
+build.ninja
+
 .ccls-cache/
 
 castle-dwm
