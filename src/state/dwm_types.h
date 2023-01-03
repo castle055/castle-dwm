@@ -51,7 +51,7 @@ typedef struct {
   void (*func)(const Arg *arg);
   
   const Arg arg;
-} Button;
+} MouseButton;
 typedef struct {
   unsigned int mod;
   KeySym keysym;

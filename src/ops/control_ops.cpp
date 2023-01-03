@@ -253,7 +253,6 @@ void control::spawn(const Arg *arg) {
     }
     log::debug("[spawn] running cmd: %s", cmd[0]);
     execvp(cmd[0], cmd);
-    fprintf(stderr, "dwm: execvp %s", cmd);
     perror(" failed");
     exit(EXIT_SUCCESS);
   }

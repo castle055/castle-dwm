@@ -68,8 +68,8 @@ namespace state {
     extern void setup_default_layouts();
     extern unsigned int dmenumon;
     extern std::unordered_map<std::string, std::vector<const char*>> cmds;
-    extern std::vector<Key> keys;
-    extern std::vector<Button> buttons;
+    extern std::vector<Key>          keys;
+    extern std::vector<MouseButton>  buttons;
     extern std::vector<ResourcePref> resources;
     
     namespace key_nav {

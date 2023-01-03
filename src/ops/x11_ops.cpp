@@ -242,14 +242,23 @@ Window create_window(
       .event_mask = ButtonPressMask | ExposureMask,
       .override_redirect = True
   };
-  XClassHint ch = {const_cast<char *>(name), const_cast<char *>(clas)};
-  Window win = XCreateWindow(state::dpy, state::root, x, y, w, h, 0, DefaultDepth(state::dpy, state::screen),
-                             CopyFromParent, DefaultVisual(state::dpy, state::screen),
-                                CWOverrideRedirect | CWBackPixmap | CWEventMask, &wa);
-  XDefineCursor(state::dpy, win, state::cursor[CurNormal]->cursor);
-  XMapRaised(state::dpy, win);
-  XSetClassHint(state::dpy, win, &ch);
-  return win;
+  XClassHint ch = {"dwm", "dwm"};
+  Window barwin = XCreateWindow(
+    state::dpy,
+    state::root,
+    x,
+    y,
+    w,
+    state::bar_height,
+    0,
+    DefaultDepth(state::dpy, state::screen),
+    CopyFromParent,
+    DefaultVisual(state::dpy, state::screen),
+    CWOverrideRedirect | CWBackPixmap | CWEventMask, &wa);
+  XDefineCursor(state::dpy, barwin, state::cursor[CurNormal]->cursor);
+  XMapRaised(state::dpy, barwin);
+  XSetClassHint(state::dpy, barwin, &ch);
+  return barwin;
 }
 
 Window x11::create_barwin(int x, int y, int w) {

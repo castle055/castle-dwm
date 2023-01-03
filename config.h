@@ -232,7 +232,7 @@ std::vector<Key> config::keys = {
 
 /* button definitions */
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
-std::vector<Button> config::buttons = {
+std::vector<MouseButton> config::buttons = {
 	/* click                event mask      button          function        argument */
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &config::layouts[2]} },

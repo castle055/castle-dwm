@@ -57,7 +57,7 @@ void run() {
   while (state::running) {
     while (XCheckIfEvent(state::dpy, &ev, (int (*)(Display *, XEvent *, XPointer)) evpredicate, NULL)) {
       if (ops::event::handler[ev.type]) {
-        ops::log::debug("EVENT: %d", ev.type);
+        //ops::log::debug("EVENT: %d", ev.type);
         ops::event::handler[ev.type](&ev);
       }
     } /* call handler */
@@ -190,7 +190,7 @@ void load_xresources() {
   char *resm;
   XrmDatabase db;
   
-  display = XOpenDisplay(nullptr);
+  display = state::dpy;//XOpenDisplay(nullptr);
   resm = XResourceManagerString(display);
   if (!resm)
     return;
