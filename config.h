@@ -65,14 +65,15 @@ std::vector<Rule> config::rules = {
 	 */
 	/* class      instance    title       TAGS mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1},
-	{ "firefox",  NULL,       NULL,       1 << 0,       0,           -1},
 	{ "google-chrome",  NULL,       NULL,       1 << 7,       0,           1},
-	{ "st",       NULL,       NULL,       1 << 1,       0,            2},
 	{ "emacs",  NULL,       NULL,       1 << 1,       0,            1},
+	{ "firefox",  NULL,       NULL,       1 << 0,       0,            1},
 	{ "Thunderbird",NULL,     NULL,       1 << 8,       0,            0},
 	{ "jetbrains-idea",NULL,  NULL,       1 << 4,       0,            1},
   { "jetbrains-clion",NULL,  NULL,      1 << 5,       0,            1},
   { "jetbrains-webstorm",NULL,  NULL,      1 << 6,       0,            1},
+    { "android-studio",NULL,  NULL,      1 << 5,       0,            1},
+	{ "st",       NULL,       NULL,       1 << 1,       0,           -1},
 	{ NULL,       "zathura",  NULL,       1 << 2,       0,            2},
 	{ "scratch",  NULL,       NULL,       0,            1,           -1},
 //	{ "Main",     NULL,       NULL,       0,            1,           -1},
