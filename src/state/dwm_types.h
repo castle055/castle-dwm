@@ -140,6 +140,7 @@ struct client_t {
 
 struct monitor_bar_t {
   bool init = false;
+  int wlen = 290;
   
   // Workspaces
   WorkspacesState* wstate = nullptr;

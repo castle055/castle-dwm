@@ -276,7 +276,7 @@ void control::togglebar(const Arg *arg) {
     if (state::selmon->tagset[state::selmon->seltags] & 1 << i)
       state::selmon->pertag->showbars[(i + 1) % (state::config::TAGS.size() + 1)] = state::selmon->showbar;
   monitor::update_bar_pos(state::selmon);
-  XMoveResizeWindow(state::dpy, state::selmon->barwin, state::selmon->wx, state::selmon->by, state::selmon->ww, state::bar_height);
+  XMoveResizeWindow(state::dpy, state::selmon->barwin, state::selmon->wx+state::selmon->bar.wlen, state::selmon->by, state::selmon->ww-state::selmon->bar.wlen, state::bar_height);
   monitor::arrange(state::selmon);
 }
 void control::togglefloating(const Arg *arg) {
@@ -335,12 +335,16 @@ void control::toggleview(const Arg *arg) {
     monitor::arrange(state::selmon);
   }
 }
+static std::mutex view_mtx;
 void control::view(const Arg *arg) {
+  view_mtx.lock();
   int i;
   unsigned int tmptag;
   
-  if ((arg->ui & TAGMASK) == state::selmon->tagset[state::selmon->seltags])
+  if ((arg->ui & TAGMASK) == state::selmon->tagset[state::selmon->seltags]) {
+    view_mtx.unlock();
     return;
+  }
   state::selmon->seltags ^= 1; /* toggle sel tagset */
   if (arg->ui & TAGMASK) {
     state::selmon->tagset[state::selmon->seltags] = arg->ui & TAGMASK;
@@ -363,6 +367,7 @@ void control::view(const Arg *arg) {
   state::selmon->sellt = state::selmon->pertag->sellts[state::selmon->pertag->curtag];
   state::selmon->lt[state::selmon->sellt] = state::selmon->pertag->ltidxs[state::selmon->pertag->curtag][state::selmon->sellt];
   state::selmon->lt[state::selmon->sellt ^ 1] = state::selmon->pertag->ltidxs[state::selmon->pertag->curtag][state::selmon->sellt ^ 1];
+  view_mtx.unlock();
   
   if (state::selmon->showbar != state::selmon->pertag->showbars[state::selmon->pertag->curtag])
     togglebar(NULL);

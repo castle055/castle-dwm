@@ -12,6 +12,7 @@
 #include "workspace_selector.hpp"
 
 STATE(Workspaces)
+  cydui::layout::color::Color* c_bkg  = new cydui::layout::color::Color("#111326");
   IntProperty occupied_workspaces;
   IntProperty selected_workspaces = 1;
   
@@ -23,15 +24,16 @@ STATE(Workspaces)
   INIT_STATE(Workspaces) {
     occupied_workspaces.bind(this);
     selected_workspaces.bind(this);
+    selected_workspaces = (1 << 0);
   }
 };
 
 static ButtonAction selector_action(WorkspacesState* state, int num) {
   return [state, num](int button) {
     if (button == 1) {
-      state->selected_workspaces = /*state->selected_workspaces.val() ^ */(1 << num);
+      state->selected_workspaces = (1 << num);
     } else if (button == 3) {
-      state->selected_workspaces = state->selected_workspaces.val() ^ (1 << num);
+      state->selected_workspaces = (state->selected_workspaces.val() ^ (1 << num));
     }
   };
 }
@@ -45,8 +47,16 @@ COMPONENT(Workspaces)
   
   REDRAW {
     WITH_STATE(Workspaces)
-    
-    ADD_TO(this, {
+  
+    using namespace primitives;
+    ADD_TO(this, ({
+      N(Rectangle, ({
+        .color = state->c_bkg,
+        .filled = true
+      }), ({ }), {
+        thisRectangle->set_pos(this, 0, 0);
+        thisRectangle->set_size(280, 25);
+      }),
       N(FlexBox, ({ .vertical = false }), ({
         N(ClockModule),
           N(WorkspaceSelector, ({
@@ -114,9 +124,9 @@ COMPONENT(Workspaces)
           })),
       }), {
         thisFlexBox->set_width(270);
-        thisFlexBox->set_pos(this, 10, 1);
+        thisFlexBox->set_pos(this, 10, 0);
       })
-    })
+    }))
   }
 };
 
