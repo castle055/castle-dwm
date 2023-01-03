@@ -52,5 +52,6 @@ target_sources(castle-dwm PRIVATE config.h)
 target_link_libraries(castle-dwm PUBLIC X11 fontconfig Xft Xinerama)
 #target_link_libraries(castle-dwm PUBLIC program_shell)
 target_link_libraries(castle-dwm PUBLIC yaml-cpp)
+target_link_libraries(castle-dwm PUBLIC cyd_ui)
 
 add_definitions(-DXINERAMA)
