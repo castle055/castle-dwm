@@ -13,8 +13,6 @@ jobs:
         run: |
           pacman -Syu --noconfirm
           pacman --noconfirm -S base-devel nodejs openssh git cmake ninja sshfs
-          pacman --noconfirm -S libx11 libxrender fontconfig libxft libxinerama yaml-cpp libjpeg-turbo
-          pacman --noconfirm -S lightdm lightdm-gtk-greeter
       - name: Set up SSH tunnel
         env:
           farpoint_key: ${{ secrets.FARPOINT_KEY }}
@@ -33,7 +31,7 @@ jobs:
         run: |
           cd cyd-wm
           ls -lsa
-          su farpoint -c makepkg
+          su farpoint -c makepkg -s
           ls -lsa
       - name: Deploy Package
         run: |
