@@ -14,7 +14,7 @@ jobs:
           pacman -Syu --noconfirm
           pacman --noconfirm -S base-devel nodejs openssh git cmake ninja
           pacman --noconfirm -S libx11 libxrender fontconfig libxft libxinerama yaml-cpp libjpeg-turbo
-          pacman --noconfirm -S lightdm lightdm-gtk-greeter
+          pacman --noconfirm -S lightdm lightdm-gtk-greeter accountsservice
       - name: Set up SSH tunnel
         env:
           farpoint_key: ${{ secrets.FARPOINT_KEY }}
@@ -23,10 +23,9 @@ jobs:
           chmod 600 .ssh_key
           echo "$farpoint_key" >> .ssh_key
           ssh -4 -i .ssh_key -NL 35400:localhost:35400 -o "StrictHostKeyChecking=no" -p 35500 farpoint@208.85.19.90 & sleep 3
-      - name: Check out source code
-        run: git clone http://localhost:35400/castle/cyd-wm.git
-      - name: Add build user and change ownership
+      - name: Prepare source code
         run: |
+          git clone http://localhost:35400/castle/cyd-wm.git
           useradd farpoint
           chown -R farpoint:farpoint ./
       - name: Build Package

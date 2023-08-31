@@ -7,7 +7,7 @@ license=('GPL3')
 
 depends=(
     libx11 libxrender fontconfig libxft libxinerama yaml-cpp libjpeg-turbo
-    lightdm lightdm-gtk-greeter
+    lightdm lightdm-gtk-greeter accountsservice
  )
 
 build() {
