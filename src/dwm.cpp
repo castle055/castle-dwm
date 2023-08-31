@@ -36,7 +36,7 @@ void cleanup(void) {
     ops::monitor::cleanup_mon(state::mons);
   for (i = 0; i < CurLast; i++)
     drw_cur_free(state::drw, state::cursor[i]);
-  for (i = 0; i < config::colors.size() + 1; i++)
+  for (i = 0; i < state::config::colors.size() + 1; i++)
     free(state::scheme[i]);
   XDestroyWindow(state::dpy, state::wmcheckwin);
   drw_free(state::drw);
@@ -45,7 +45,7 @@ void cleanup(void) {
   XDeleteProperty(state::dpy, state::root, state::netatom[NetActiveWindow]);
 }
 /* there are some broken focus acquiring clients needing extra handling */
-Bool evpredicate() {
+Bool eevpredicate() {
   return True;
 }
 
@@ -55,7 +55,7 @@ void run() {
   /* main event loop */
   XSync(state::dpy, False);
   while (state::running) {
-    while (XCheckIfEvent(state::dpy, &ev, (int (*)(Display *, XEvent *, XPointer)) evpredicate, NULL)) {
+    while (XCheckIfEvent(state::dpy, &ev, (int (*)(Display *, XEvent *, XPointer)) eevpredicate, NULL)) {
       if (ops::event::handler[ev.type]) {
         //ops::log::debug("EVENT: %d", ev.type);
         ops::event::handler[ev.type](&ev);
@@ -75,9 +75,9 @@ void run() {
 //}
 void settheme() {
   /* init appearance */
-  state::scheme[config::colors.size()] = drw_scm_create(state::drw, (char**)&(config::colors[0][0]), 3);
-  for (size_t i = 0; i < config::colors.size(); i++)
-    state::scheme[i] = drw_scm_create(state::drw, (char**)&(config::colors[i][0]), 3);
+  state::scheme[state::config::colors.size()] = drw_scm_create(state::drw, (char**)&(state::config::colors[0][0]), 3);
+  for (size_t i = 0; i < state::config::colors.size(); i++)
+    state::scheme[i] = drw_scm_create(state::drw, (char**)&(state::config::colors[i][0]), 3);
 }
 void setup() {
   ops::log::info("Setting up...");
@@ -93,7 +93,7 @@ void setup() {
   state::sh = DisplayHeight(state::dpy, state::screen);
   state::root = RootWindow(state::dpy, state::screen);
   state::drw = drw_create(state::dpy, state::screen, state::root, state::sw, state::sh);
-  if (!drw_fontset_create(state::drw, &config::fonts[0], config::fonts.size()))
+  if (!drw_fontset_create(state::drw, &state::config::fonts[0], state::config::fonts.size()))
     die("no fonts could be loaded.");
   state::lrpad = state::drw->fonts->h;
   state::bar_height = state::drw->fonts->h + 10;
@@ -253,7 +253,7 @@ int main(int argc, char *argv[]) {
     die("dwm: cannot open display");
   ops::x11::check_other_wm();
   XrmInitialize();
-  state::scheme = (Clr **) ecalloc(config::colors.size() + 1, sizeof(Clr *));
+  state::scheme = (Clr **) ecalloc(state::config::colors.size() + 1, sizeof(Clr *));
   load_xresources();
   
   setup();

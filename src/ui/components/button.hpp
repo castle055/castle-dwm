@@ -6,9 +6,9 @@
 #define CYD_UI_BUTTON_HPP
 
 #include <functional>
-#include <cyd_ui/cydui.hpp>
+#include "cyd-ui/dist/include/cydui.hpp"
 
-STATE(Button)
+STATE(Button) {
   bool hovering = false;
   
   cydui::layout::fonts::Font font {
@@ -21,20 +21,22 @@ STATE(Button)
   cydui::layout::color::Color* c1    = new cydui::layout::color::Color("#000000");
 };
 
-typedef std::function<void(int)> ButtonAction;
-#define action [&,state, this](int button)
+typedef std::function<void(int button)> ButtonAction;
+#define action [&, this]
 
-COMPONENT(Button)
+COMPONENT(Button) {
   PROPS({
     std::string text = "Text";
-    cydui::layout::fonts::Font* font;
-    ButtonAction on_action = [](int button) { };
+    cydui::layout::fonts::Font* font = nullptr;
+    ButtonAction on_action = [](int) { };
     cydui::layout::color::Color* c     = nullptr;
     cydui::layout::color::Color* c_dim = nullptr;
     cydui::layout::color::Color* c1    = nullptr;
+    
+    bool toggled = false;
   })
   
-  INIT(Button)
+  INIT(Button) {
     if (!this->props.font) this->props.font   = &state->font;
     if (!this->props.c) this->props.c         = state->c;
     if (!this->props.c_dim) this->props.c_dim = state->c_dim;
@@ -42,45 +44,45 @@ COMPONENT(Button)
   }
   
   REDRAW {
-    WITH_STATE(Button)
-    
-    using namespace primitives;
-    ADD_TO(this, ({
-      N(Rectangle, ({
-        .color = state->hovering? props.c : props.c_dim,
-        .filled = true
-      }), ({ }), {
-        thisRectangle->set_pos(this, 0, 0);
-        thisRectangle->set_size(state->geom.content_w(), state->geom.content_h());
-      }),
-        N(Text, ({
-          .color = state->hovering? props.c1 : props.c,
+    auto content_size = graphics::get_text_size(&state->font, props.text);
+    add({
+      COMP(Text)({
+        .props = {
+          .color = state->hovering || props.toggled? props.c1 : props.c,
           .font = props.font,
           .text = props.text,
-        }), ({ }), {
-          thisText->set_margin(5, 5, 5, 5);
-          thisText->set_width(state->geom.custom_width? state->geom.content_w() : 125);
-        })
-    }))
+        },
+        .x = 5,
+        .y = ((dim->ch/2) + (state->font.size/2)) - content_size.second,
+        //.init = [](auto* t){
+        //t->state->dim.margin = 5;
+        //},
+      }),
+      COMP(Rectangle)({
+        .props = {
+          .color = state->hovering || props.toggled? props.c : props.c_dim,
+          .filled = true
+        },
+        .w = state->dim.cw,
+        .h = state->dim.ch,
+      }),
+    }, true);
   }
   
-  void on_mouse_enter(int x, int y) override {
-    auto state = (ButtonState*)this->state;
+  ON_MOUSE_ENTER(x,y) {
     state->hovering = true;
     state->dirty();
   }
   
-  void on_mouse_exit(int x, int y) override {
-    auto state = (ButtonState*)this->state;
+  ON_MOUSE_EXIT(x,y) {
     state->hovering = false;
     state->dirty();
   }
   
-  void on_mouse_click(int x, int y, int button) override {
-    auto state = (ButtonState*)this->state;
+  ON_CLICK(x,y,button) {
     state->hovering = false;
-    state->dirty();
     props.on_action(button);
+    state->dirty();
   }
 };
 

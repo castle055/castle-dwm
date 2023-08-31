@@ -47,11 +47,24 @@ include(build/CMakeLists.txt)
 
 include_directories (/usr/include/freetype2)
 
+include_directories(${CMAKE_CURRENT_LIST_DIR}/.cyd/deps)
+
+FILE(GLOB_RECURSE STATIC_EXTRA_LIBS # TODO - Not necessarily static... you should change that
+        #        ${CMAKE_CURRENT_LIST_DIR}/.cyd/build/rust/debug/*.so
+        ${CMAKE_CURRENT_LIST_DIR}/.cyd/deps/*.a)
+
+FILE(GLOB_RECURSE EXTRA_LIBS_LIST
+        ${CMAKE_CURRENT_LIST_DIR}/.cyd/deps/*.*)
+
+
 #add_library(b_config config.h)
+target_sources(castle-dwm PRIVATE ${EXTRA_LIBS_LIST})
 target_sources(castle-dwm PRIVATE config.h)
-target_link_libraries(castle-dwm PUBLIC X11 fontconfig Xft Xinerama)
+target_link_libraries(castle-dwm PRIVATE ${STATIC_EXTRA_LIBS})
+target_link_libraries(castle-dwm PUBLIC X11 Xrender fontconfig Xft Xinerama)
 #target_link_libraries(castle-dwm PUBLIC program_shell)
 target_link_libraries(castle-dwm PUBLIC yaml-cpp)
-target_link_libraries(castle-dwm PUBLIC cyd_ui)
+target_link_libraries(castle-dwm PUBLIC jpeg)
+#target_link_libraries(castle-dwm PUBLIC cyd_ui)
 
 add_definitions(-DXINERAMA)

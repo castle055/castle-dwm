@@ -143,8 +143,7 @@ struct monitor_bar_t {
   int wlen = 290;
   
   // Workspaces
-  WorkspacesState* wstate = nullptr;
-  Workspaces* workspaces = nullptr;
+  WorkspaceStatus wstatus;
   cydui::layout::Layout* wlay = nullptr;
   cydui::window::CWindow* wwin = nullptr;
 };

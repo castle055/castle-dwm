@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Restarts dwm when exited (keeps session opened)
+
+while true; do
+    /usr/bin/castle-dwm
+    continue
+done

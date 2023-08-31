@@ -8,35 +8,44 @@
 #include "control_ops.h"
 #include "../state/state.h"
 #include "../util.h"
-#include <cyd_ui/cydui.hpp>
-#include "../ui/status_bar/workspaces.hpp"
+#include <cyd-ui/dist/include/cydui.hpp>
 
 #include <string>
 
 using namespace ops;
 
 std::unordered_map<int, bar_t> bars;
+logging::logger bar_log = {.name = "BAR_OPS", .on = false};
 
 static void init_bar(monitor_t* mon) {
   monitor_bar_t* bar = &(mon->bar);
+  bar_log.info("=== INITIALIZING BAR");
+  cydui::layout::Layout* layout = cydui::layout::create<Workspaces>({.props = {&bar->wstatus}});
   
-  bar->wstate       = new WorkspacesState();
-  auto* state       = bar->wstate;
-  bar->workspaces   = new Workspaces(bar->wstate, { }, ___inner(Workspaces, t, { }));
-  bar->wlay         = new cydui::layout::Layout(bar->workspaces);
-  bar->wwin         = cydui::window::create(
-    bar->wlay,
-    "dwm", "dwm",
-    mon->wx + 0, mon->by + 1,
-    //1, 13,
-    280, 24,
+  // Create the window that will display the layout
+  cydui::window::CWindow* win = cydui::window::create(
+    layout,
+    "Workspace Selector",
+    "castle-dwm-ui",
+    mon->wx, mon->by + 0, // X, Y of the window
+    280, 23, // W, H of the window
     true
   );
+  bar->wlay         = layout;
+  bar->wwin         = win;
   
-  bar->wstate->selected_workspaces.on_change([bar, mon]() {
-    const Arg a {.ui = (unsigned int)bar->wstate->selected_workspaces.val()};
-    ops::control::view(&a);
-  });
+  events::on_event<WorkspaceEvent>(events::Consumer<WorkspaceEvent>([mon,win](const events::ParsedEvent<WorkspaceEvent>& it){
+    bar_log.info("=== ANSWERING TO WS EVENT");
+    if (it.data->win != (unsigned int)win->win_ref->xwin) return;
+    if (it.data->start_menu) {
+      const Arg a {.v = "startmenu"};
+      ops::control::spawn(&a);
+    } else {
+      const Arg a {.ui = (unsigned int)mon->bar.wstatus.selected_workspaces};
+      state::selmon = mon; // Select which ever monitor the selector was clicked on
+      ops::control::view(&a); // Go to selected workspace
+    }
+  }));
   
   //m->barwin = win->win_ref->xwin;//x11::create_barwin(m->wx, m->by, m->ww);
   mon->barwin = x11::create_barwin(mon->wx+mon->bar.wlen, mon->by, mon->ww-mon->bar.wlen);
@@ -83,7 +92,7 @@ int draw_statusbar(int width) {
       if (!isCode) {
         isCode = 1;
         text[i] = '\0';
-        w += TEXTW_CSTR(text) - state::lrpad;
+        w += (int)TEXTW_CSTR(text) - state::lrpad;
         text[i] = '^';
         if (text[++i] == 'f')
           w += atoi(text + ++i);
@@ -95,7 +104,7 @@ int draw_statusbar(int width) {
     }
   }
   if (!isCode)
-    w += TEXTW_CSTR(text) - state::lrpad;
+    w += (int)TEXTW_CSTR(text) - state::lrpad;
   else
     isCode = 0;
   text = p;
@@ -292,8 +301,9 @@ void update_bar(monitor_t* monitor, bar_t bar) {
   drw_map(state::drw, bar.win, 0, 0, bar.width, state::bar_height);
   
   XUnlockDisplay(state::dpy);
-  monitor->bar.wstate->occupied_workspaces.set((unsigned int)monitor->bar.wwin->win_ref->xwin,(int)occ);
-  monitor->bar.wstate->selected_workspaces.set((unsigned int)monitor->bar.wwin->win_ref->xwin,(int)(monitor->tagset[monitor->seltags]));
+  monitor->bar.wstatus.occupied_workspaces = (int)occ;
+  monitor->bar.wstatus.selected_workspaces = (int)(monitor->tagset[monitor->seltags]);
+  events::emit<RedrawEvent>({.win = (unsigned int)monitor->bar.wwin->win_ref->xwin});
 }
 
 void bar::update_all() {
