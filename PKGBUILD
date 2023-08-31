@@ -5,7 +5,10 @@ pkgdesc="Cydonia Window Manager"
 arch=('any')
 license=('GPL3')
 
-depends=(libx11)
+depends=(
+    libx11 libxrender fontconfig libxft libxinerama yaml-cpp libjpeg-turbo
+    lightdm lightdm-gtk-greeter
+ )
 
 build() {
   cd ..

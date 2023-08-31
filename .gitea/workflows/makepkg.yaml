@@ -13,6 +13,7 @@ jobs:
         run: |
           pacman -Syu --noconfirm
           pacman --noconfirm -S base-devel nodejs openssh git cmake ninja sshfs
+          pacman --noconfirm -S libx11 libxrender fontconfig libxft libxinerama yaml-cpp libjpeg-turbo
       - name: Set up SSH tunnel
         env:
           farpoint_key: ${{ secrets.FARPOINT_KEY }}
