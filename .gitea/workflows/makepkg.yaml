@@ -31,7 +31,7 @@ jobs:
         run: |
           cd cyd-wm
           ls -lsa
-          su farpoint -c makepkg -s
+          su farpoint -c "makepkg -s"
           ls -lsa
       - name: Deploy Package
         run: |
