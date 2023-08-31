@@ -5,7 +5,7 @@ pkgdesc="Cydonia Window Manager"
 arch=('any')
 license=('GPL3')
 
-depends=()
+depends=(libx11)
 
 build() {
   cd ..
