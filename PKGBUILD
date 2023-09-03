@@ -1,6 +1,6 @@
 pkgname=cyd-wm
 pkgver=r$(git rev-parse --short HEAD)
-pkgrel=2
+pkgrel=1
 pkgdesc="Cydonia Window Manager"
 arch=('any')
 license=('GPL3')
