@@ -22,7 +22,7 @@ jobs:
           touch .ssh_key
           chmod 600 .ssh_key
           echo "$farpoint_key" >> .ssh_key
-          ssh -4 -i .ssh_key -NL 35400:localhost:35400 -o "StrictHostKeyChecking=no" -p 35500 farpoint@208.85.19.90 & sleep 3
+          ssh -4 -i .ssh_key -NL 35400:localhost:35400 -NL 35401:localhost:35401 -o "StrictHostKeyChecking=no" -p 35500 farpoint@208.85.19.90 & sleep 3
       - name: Set up private package repository
         run: |
           echo -e '[cpr-main]\n\rSigLevel = Optional TrustAll\n\rServer = http://localhost:35401/cpr-main' >> /etc/pacman.conf
