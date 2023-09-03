@@ -2,6 +2,7 @@
 .idea/
 CMakeFiles/
 cmake-build-debug/
+cmake-*/
 Testing/
 
 *.a

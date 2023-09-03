@@ -21,7 +21,7 @@ package() {
   cd ..
 
   # Install static library binary
-  install -Dm755 cmake-build-release/castle-dwm "$pkgdir/usr/bin/castle-dwm"
+  install -Dm755 cmake-build-release/$pkgname "$pkgdir/usr/bin/$pkgname"
   install -Dm755 start_cwm "$pkgdir/usr/bin/start_cwm"
 
   # Install xsession file

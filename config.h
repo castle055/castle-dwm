@@ -185,14 +185,14 @@ namespace state {
     { "casysDown", { "casys", "down", nullptr }},
     { "exitmenu", { "exitmenu", nullptr }},
     { "dispmenu", { "cmonmgr", nullptr }},
-    { "startmenu", { "launch_startmenu", nullptr }},
+    { "startmenu", { "startmenu", nullptr }},
   };
   
   KeyTrigger config::key_nav::trigger           = { MODKEY, XK_d };
   long      config::key_nav::accepting_timespan = -1;
   
   using namespace ops::control;
-  std::vector<Key> config::keys = {
+  std::vector<KeySpec> config::keys = {
     /* modifier                     key        function        argument */
     { 0, XK_Super_L, spawn, {.v = "startmenu"}},
     { MODKEY, XK_d, spawn, {.v = "dmenucmd"}},

@@ -5,14 +5,14 @@
 #ifndef CYD_UI_WORKSPACE_SELECTOR_HPP
 #define CYD_UI_WORKSPACE_SELECTOR_HPP
 
-#include <cyd-ui/dist/include/cydui.hpp>
+#include <cydui/cydui.hpp>
 #include "../components/button.hpp"
 
 STATE(WorkspaceSelector) {
   
-  cydui::layout::color::Color* c_nominal  = new cydui::layout::color::Color("#111326");
-  cydui::layout::color::Color* c_selected = new cydui::layout::color::Color("#2d2310");
-  cydui::layout::color::Color* c_occupied = new cydui::layout::color::Color("#FCAE1E");
+  color::Color c_nominal  = "#111326"_color;
+  color::Color c_selected = "#2d2310"_color;
+  color::Color c_occupied = "#FCAE1E"_color;
   
   INIT_STATE(WorkspaceSelector) {
   
@@ -22,7 +22,7 @@ STATE(WorkspaceSelector) {
 COMPONENT(WorkspaceSelector) {
   PROPS({
     std::string text = "-";
-    cydui::layout::fonts::Font* font;
+    font::Font* font;
     bool         occupied = false;
     bool         selected = false;
     ButtonAction on_click;

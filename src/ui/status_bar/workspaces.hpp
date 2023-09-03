@@ -4,8 +4,8 @@
 #ifndef CYD_UI_WORKSPACES_HPP
 #define CYD_UI_WORKSPACES_HPP
 
-#include "cyd-ui/dist/include/cydui.hpp"
-#include "cyd-ui/dist/include/containers.hpp"
+#include "cydui/cydui.hpp"
+#include "cydui/containers.hpp"
 #include "../components/button.hpp"
 #include "../components/clock_module.hpp"
 #include "workspace_selector.hpp"
@@ -21,11 +21,11 @@ struct WorkspaceStatus {
 };
 
 STATE(Workspaces) {
-  cydui::layout::color::Color* c_bkg  = new cydui::layout::color::Color("#111326");
+  color::Color c_bkg  = "#111326"_color;
   //IntProperty occupied_workspaces;
   //IntProperty selected_workspaces = 1;
   
-  cydui::layout::fonts::Font font {
+  font::Font font {
     .name = "Fira Code Retina",
     .size = 10
   };

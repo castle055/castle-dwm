@@ -5,7 +5,7 @@
 #ifndef CYD_UI_CLOCK_MODULE_HPP
 #define CYD_UI_CLOCK_MODULE_HPP
 
-#include "cyd-ui/dist/include/cydui.hpp"
+#include "cydui/cydui.hpp"
 #include "./button.hpp"
 
 #include <ctime>

@@ -6,19 +6,16 @@
 #define CYD_UI_BUTTON_HPP
 
 #include <functional>
-#include "cyd-ui/dist/include/cydui.hpp"
+#include "cydui/cydui.hpp"
 
 STATE(Button) {
   bool hovering = false;
   
-  cydui::layout::fonts::Font font {
+  font::Font font {
     .name = "Fira Code Retina",
     .size = 10
   };
   
-  cydui::layout::color::Color* c     = new cydui::layout::color::Color("#FCAE1E");
-  cydui::layout::color::Color* c_dim = new cydui::layout::color::Color("#2d2310");
-  cydui::layout::color::Color* c1    = new cydui::layout::color::Color("#000000");
 };
 
 typedef std::function<void(int button)> ButtonAction;
@@ -27,20 +24,17 @@ typedef std::function<void(int button)> ButtonAction;
 COMPONENT(Button) {
   PROPS({
     std::string text = "Text";
-    cydui::layout::fonts::Font* font = nullptr;
+    font::Font* font = nullptr;
     ButtonAction on_action = [](int) { };
-    cydui::layout::color::Color* c     = nullptr;
-    cydui::layout::color::Color* c_dim = nullptr;
-    cydui::layout::color::Color* c1    = nullptr;
+    color::Color c     = "#FCAE1E"_color;
+    color::Color c_dim = "#2d2310"_color;
+    color::Color c1    = "#000000"_color;
     
     bool toggled = false;
   })
   
   INIT(Button) {
     if (!this->props.font) this->props.font   = &state->font;
-    if (!this->props.c) this->props.c         = state->c;
-    if (!this->props.c_dim) this->props.c_dim = state->c_dim;
-    if (!this->props.c1) this->props.c1       = state->c1;
   }
   
   REDRAW {

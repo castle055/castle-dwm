@@ -12,6 +12,7 @@
 #include <array>
 #include <unordered_map>
 #include "../ui/status_bar/workspaces.hpp"
+#include "../ui/status_bar/window_title.hpp"
 
 /* enums */
 enum {
@@ -64,7 +65,7 @@ typedef struct {
   void (*func)(const Arg *);
   
   const Arg arg;
-} Key;
+} KeySpec;
 typedef struct {
   const char *class_;
   const char *instance;
@@ -140,12 +141,14 @@ struct client_t {
 
 struct monitor_bar_t {
   bool init = false;
-  int wlen = 290;
+  int wlen = 290 + 360;
   
   // Workspaces
   WorkspaceStatus wstatus;
   cydui::layout::Layout* wlay = nullptr;
   cydui::window::CWindow* wwin = nullptr;
+  cydui::layout::Layout* tlay = nullptr;
+  cydui::window::CWindow* twin = nullptr;
 };
 
 struct monitor_t {

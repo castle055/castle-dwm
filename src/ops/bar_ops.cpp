@@ -8,7 +8,7 @@
 #include "control_ops.h"
 #include "../state/state.h"
 #include "../util.h"
-#include <cyd-ui/dist/include/cydui.hpp>
+#include <cydui/cydui.hpp>
 
 #include <string>
 
@@ -21,6 +21,7 @@ static void init_bar(monitor_t* mon) {
   monitor_bar_t* bar = &(mon->bar);
   bar_log.info("=== INITIALIZING BAR");
   cydui::layout::Layout* layout = cydui::layout::create<Workspaces>({.props = {&bar->wstatus}});
+  cydui::layout::Layout* layout1 = cydui::layout::create<WinTitle>({});
   
   // Create the window that will display the layout
   cydui::window::CWindow* win = cydui::window::create(
@@ -33,6 +34,17 @@ static void init_bar(monitor_t* mon) {
   );
   bar->wlay         = layout;
   bar->wwin         = win;
+  
+  cydui::window::CWindow* win1 = cydui::window::create(
+    layout1,
+    "Window Status",
+    "castle-dwm-ui",
+    mon->wx + 290, mon->by + 0, // X, Y of the window
+    350, 23, // W, H of the window
+    true
+  );
+  bar->tlay         = layout1;
+  bar->twin         = win1;
   
   events::on_event<WorkspaceEvent>(events::Consumer<WorkspaceEvent>([mon,win](const events::ParsedEvent<WorkspaceEvent>& it){
     bar_log.info("=== ANSWERING TO WS EVENT");
@@ -259,9 +271,14 @@ void update_bar(monitor_t* monitor, bar_t bar) {
   //             urg & 1 << i);
   //  x += w;
   //}
-  w = state::blw = TEXTW_CSTR(monitor->ltsymbol);
-  drw_setscheme(state::drw, state::scheme[SchemeNorm]);
-  x = drw_text(state::drw, x, 3, w, state::bar_height - 6, state::lrpad / 2, monitor->ltsymbol, 0);
+  events::emit<WindowStatusUpdate>({
+    .win = (unsigned int)monitor->bar.twin->win_ref->xwin,
+    .type = win_status_update_t::LAYOUT_SYMBOL,
+    .str1 = monitor->ltsymbol,
+  });
+  //w = state::blw = TEXTW_CSTR(monitor->ltsymbol);
+  //drw_setscheme(state::drw, state::scheme[SchemeNorm]);
+  //x = drw_text(state::drw, x, 3, w, state::bar_height - 6, state::lrpad / 2, monitor->ltsymbol, 0);
   
   if (monitor == state::selmon && state::key_nav::accepting) {
     unsigned int kn_width = TEXTW_CSTR(state::key_nav::current_path.c_str());
@@ -289,13 +306,23 @@ void update_bar(monitor_t* monitor, bar_t bar) {
   
   if ((w = monitor->ww - tw - x) > state::bar_height) {
     if (monitor->sel) {
-      drw_setscheme(state::drw, state::scheme[monitor == state::selmon ? SchemeSel : SchemeNorm]);
-      drw_text(state::drw, x, 0, w, state::bar_height, (state::lrpad + w - TEXTW(monitor->sel->name)) / 2, monitor->sel->name.c_str(), 0);
+      //drw_setscheme(state::drw, state::scheme[monitor == state::selmon ? SchemeSel : SchemeNorm]);
+      //drw_text(state::drw, x, 0, w, state::bar_height, (state::lrpad + w - TEXTW(monitor->sel->name)) / 2, monitor->sel->name.c_str(), 0);
+      events::emit<WindowStatusUpdate>({
+        .win = (unsigned int)monitor->bar.twin->win_ref->xwin,
+        .type = win_status_update_t::WINDOW_TITLE,
+        .str1 = monitor->sel->name,
+      });
       if (monitor->sel->isfloating)
         drw_rect(state::drw, x + boxs + 4, 3, w - 8, state::bar_height - 6, monitor->sel->isfixed, 0);
     } else {
       drw_setscheme(state::drw, state::scheme[SchemeNorm]);
       drw_rect(state::drw, x, 0, w, state::bar_height, 1, 1);
+      events::emit<WindowStatusUpdate>({
+        .win = (unsigned int)monitor->bar.twin->win_ref->xwin,
+        .type = win_status_update_t::WINDOW_TITLE,
+        .str1 = "",
+      });
     }
   }
   drw_map(state::drw, bar.win, 0, 0, bar.width, state::bar_height);
@@ -304,6 +331,7 @@ void update_bar(monitor_t* monitor, bar_t bar) {
   monitor->bar.wstatus.occupied_workspaces = (int)occ;
   monitor->bar.wstatus.selected_workspaces = (int)(monitor->tagset[monitor->seltags]);
   events::emit<RedrawEvent>({.win = (unsigned int)monitor->bar.wwin->win_ref->xwin});
+  events::emit<RedrawEvent>({.win = (unsigned int)monitor->bar.twin->win_ref->xwin});
 }
 
 void bar::update_all() {
