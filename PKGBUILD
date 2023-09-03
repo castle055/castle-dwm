@@ -6,6 +6,7 @@ arch=('any')
 license=('GPL3')
 
 depends=(
+    cydstd cydui cydui-std
     libx11 libxrender fontconfig libxft libxinerama yaml-cpp libjpeg-turbo
     lightdm lightdm-gtk-greeter accountsservice
  )
