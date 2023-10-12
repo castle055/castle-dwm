@@ -41,5 +41,6 @@ jobs:
           ls -lsa
       - name: Deploy Package
         run: |
+          ssh -4 -i .ssh_key -o "StrictHostKeyChecking=no" -p 35500 farpoint@208.85.19.90 'cd /mnt/space_port/pkgs/cpr-main && rm -vf cyd-wm-*.pkg.tar.zst'
           scp -4 -i .ssh_key -o 'StrictHostKeyChecking=no' -P 35500 cyd-wm/cyd-wm-*.pkg.tar.zst farpoint@208.85.19.90:/mnt/space_port/pkgs/cpr-main/
           ssh -4 -i .ssh_key -o "StrictHostKeyChecking=no" -p 35500 farpoint@208.85.19.90 'cd /mnt/space_port/pkgs/cpr-main && repo-add cpr-main.db.tar.gz $(ls *.pkg.tar.zst)'
