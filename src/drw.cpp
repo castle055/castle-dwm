@@ -274,7 +274,7 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
 {
 	char buf[1024];
 	int ty;
-	unsigned int ew;
+	unsigned int ew = 0U;
 	XftDraw *d = NULL;
 	Fnt *usedfont, *curfont, *nextfont;
 	size_t i, len;
