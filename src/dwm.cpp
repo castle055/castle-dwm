@@ -189,19 +189,16 @@ void resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *d
   }
 }
 void load_xresources() {
-  Display *display;
   char *resm;
   XrmDatabase db;
   
-  display = XOpenDisplay(nullptr);
-  resm = XResourceManagerString(display);
+  resm = XResourceManagerString(state::dpy);
   if (!resm)
     return;
   
   db = XrmGetStringDatabase(resm);
   for (const auto &p : state::config::resources)
     resource_load(db, p.name, p.type, p.dst);
-  XCloseDisplay(display);
   settheme();
 }
 

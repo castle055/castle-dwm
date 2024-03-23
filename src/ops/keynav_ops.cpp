@@ -57,8 +57,12 @@ bool keynav::process(XKeyEvent* ev) {
   KeySym keysym = XKeycodeToKeysym(state::dpy, (KeyCode) ev->keycode, 0);
   // Navigate if KeyNav active
   if (state::key_nav::accepting) {
-    log::info("[key_nav] gotcha: %d", keysym);
-    if (keysym == XK_Escape) {
+    //log::info("[key_nav] gotcha: %d", keysym);
+    // Check if KeyNav trigger
+    //log::info("[keypress] KeySym: %s", XKeysymToString(keysym));
+    if ((keysym == state::config::key_nav::trigger.keysym
+      && CLEANMASK(state::config::key_nav::trigger.mod) == CLEANMASK(ev->state))
+      || keysym == XK_Escape) {
       reset();
       return true;
     }
@@ -92,6 +96,7 @@ bool keynav::process(XKeyEvent* ev) {
     return true;
   } else {
     // Check if KeyNav trigger
+    //log::info("[keypress] KeySym: %s", XKeysymToString(keysym));
     if (keysym == state::config::key_nav::trigger.keysym
         && CLEANMASK(state::config::key_nav::trigger.mod) == CLEANMASK(ev->state)) {
       state::key_nav::accepting = true;

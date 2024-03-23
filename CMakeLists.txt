@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.26)
 
 project(cyd-wm)
 
@@ -39,9 +39,14 @@ enable_cxx_compiler_flag_if_supported("-Wno-sign-compare")
 enable_cxx_compiler_flag_if_supported("-Wno-deprecated-declarations")
 enable_cxx_compiler_flag_if_supported("-Wno-cast-function-type")
 
+enable_cxx_compiler_flag_if_supported("-Wmacro-redefine")
+
 #enable_cxx_compiler_flag_if_supported("-Wno-error=unused")
 
 enable_cxx_compiler_flag_if_supported("-Wno-unknown-pragmas")
+
+# Hmm...
+enable_cxx_compiler_flag_if_supported("-Wno-error=format=")
 
 include_directories (/usr/include/freetype2)
 
@@ -57,7 +62,14 @@ FILE(GLOB_RECURSE SRC_LIST
         ${CMAKE_CURRENT_LIST_DIR}/src/*.hpp
         )
 
-LIST(APPEND EXT_LIBS cydstd cyd_ui cyd_ui_std yaml-cpp X11 Xft Xrender Xinerama fontconfig jpeg)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(CAIROMM-1.16 REQUIRED cairomm-1.16)
+include_directories(${CAIROMM-1.16_INCLUDE_DIRS})
+
+LIST(APPEND EXT_LIBS
+        cydstd /home/castle/repos/inhouse/cyd-ui/cmake-build-release/libcyd_ui.a
+        X11 Xft Xrender Xinerama xcb
+        yaml-cpp fontconfig jpeg ${CAIROMM-1.16_LIBRARIES} sensors)
 
 add_executable(cyd-wm ${SRC_LIST})
 target_link_libraries(cyd-wm PUBLIC ${EXT_LIBS})

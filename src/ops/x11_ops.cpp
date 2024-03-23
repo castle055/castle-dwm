@@ -85,7 +85,7 @@ long x11::get_state(Window w) {
   return result;
 }
 int x11::get_text_prop(Window w, Atom atom, std::string& text) {
-  log::debug("[get_text_prop]");
+  //log::debug("[get_text_prop]");
   char **list = nullptr;
   int n;
   XTextProperty name;
@@ -101,7 +101,7 @@ int x11::get_text_prop(Window w, Atom atom, std::string& text) {
   }
   else {
     if (XmbTextPropertyToTextList(state::dpy, &name, &list, &n) >= Success && n > 0 && *list) {
-      log::debug("[get_text_prop] weird text list thing.");
+      //log::debug("[get_text_prop] weird text list thing.");
       text = *list;
       XFreeStringList(list);
     }
@@ -275,6 +275,10 @@ void x11::grab_keys() {
     KeyCode code;
     
     XUngrabKey(state::dpy, AnyKey, AnyModifier, state::root);
+    if ((code = XKeysymToKeycode(state::dpy, state::config::key_nav::trigger.keysym)))
+      for (j = 0; j < LENGTH(modifiers); j++)
+        XGrabKey(state::dpy, code, state::config::key_nav::trigger.mod | modifiers[j], state::root,
+                 True, GrabModeAsync, GrabModeAsync);
     for (i = 0; i < state::config::keys.size(); i++)
       if ((code = XKeysymToKeycode(state::dpy, state::config::keys[i].keysym)))
         for (j = 0; j < LENGTH(modifiers); j++)

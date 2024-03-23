@@ -16,7 +16,7 @@ namespace state {
 #define DEVEL false
 
 #if DEVEL
-#define MODKEY Mod4Mask
+#define MODKEY Mod1Mask
   unsigned short config::ctl_port= 33851;
   std::string config::log_file = "/dev/stdout";
 #else
@@ -63,7 +63,7 @@ namespace state {
   };
   
   /* Gapps */
-  unsigned int config::gappx = 20;
+  unsigned int config::gappx = 10;
   
   /* tagging */
   const std::vector<std::string>config::TAGS = {
@@ -87,7 +87,12 @@ namespace state {
     { "Gimp", NULL, NULL, 0, 1, -1 },
     { "google-chrome", NULL, NULL, 1 << 7, 0, 1 },
     { "emacs", NULL, NULL, 1 << 1, 0, 1 },
-    { "firefox", NULL, NULL, 1 << 0, 0, 0 },
+    // ? FIREFOX GROUP
+    { "firefox", NULL, NULL, 1 << 3, 0, 0 },
+    { "firefox-default", NULL, NULL, 1 << 0, 0, 0 },
+    { "firefox-media", NULL, NULL, 1 << 1, 0, 0 },
+    { "firefox-college", NULL, NULL, 1 << 2, 0, 0 },
+    
     { "thunderbird", NULL, NULL, 1 << 8, 0, 0 },
     { "Thunderbird", NULL, NULL, 1 << 8, 0, 0 },
     { "jetbrains-idea", NULL, NULL, 1 << 4, 0, 1 },
@@ -102,7 +107,7 @@ namespace state {
     { "TelegramDesktop", NULL, NULL, 1 << 0, 0, 2 },
     { "discord", NULL, NULL, 1 << 0, 0, 2 },
     { "Slack", NULL, NULL, 1 << 0, 0, 2 },
-    { "GitKraken", NULL, NULL, 1 << 3, 0, 0 },
+    { "GitKraken", NULL, NULL, 1 << 4, 0, 0 },
     { "Inkscape", NULL, NULL, 1 << 7, 0, 1 },
     { "Binance", NULL, NULL, 1 << 2, 0, 0 },
   };
@@ -138,10 +143,12 @@ namespace state {
     //  default_layouts[1][1] = {.ltidx = 0, .nmaster = 1};
     
     // ADD LAYOUT DEFINITIONS HERE
+    // Browser layouts
+    default_layouts[0][3] = {.ltidx = 0, .nmaster = 1};
     //  Workspace 8 on EVERY monitor is FLOATING LAYOUT
-    default_layouts[0][7] = {.ltidx = 1, .nmaster = 1};
-    default_layouts[1][7] = {.ltidx = 1, .nmaster = 1};
-    default_layouts[2][7] = {.ltidx = 1, .nmaster = 1};
+    //default_layouts[0][7] = {.ltidx = 1, .nmaster = 1};
+    //default_layouts[1][7] = {.ltidx = 1, .nmaster = 1};
+    //default_layouts[2][7] = {.ltidx = 1, .nmaster = 1};
     //  Workspaces 1 & 2 on monitor 2 are CENTERED FLOATING MASTER LAYOUT with multiple masters
     default_layouts[2][0] = {.ltidx = 3, .nmaster = 4};
     default_layouts[2][1] = {.ltidx = 3, .nmaster = 7};
@@ -188,14 +195,15 @@ namespace state {
     { "startmenu", { "startmenu", nullptr }},
   };
   
-  KeyTrigger config::key_nav::trigger           = { MODKEY, XK_d };
+  //KeyTrigger config::key_nav::trigger           = { MODKEY, XK_d };
+  KeyTrigger config::key_nav::trigger           = { 0, XK_Super_L };
   long      config::key_nav::accepting_timespan = -1;
   
   using namespace ops::control;
   std::vector<KeySpec> config::keys = {
     /* modifier                     key        function        argument */
-    { 0, XK_Super_L, spawn, {.v = "startmenu"}},
-    { MODKEY, XK_d, spawn, {.v = "dmenucmd"}},
+    //{ 0, XK_Super_L, spawn, {.v = "startmenu"}},
+    //{ MODKEY, XK_d, spawn, {.v = "dmenucmd"}},
     { MODKEY, XK_q, spawn, {.v = "termcmd"}},
     { MODKEY, XK_s, spawn, {.v = "scratchterm"}},
     { MODKEY, XK_w, spawn, {.v = "webbrowsercmd"}},

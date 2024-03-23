@@ -385,7 +385,7 @@ void client::update_size_hints(client_t* client) {
   client->isfixed = (client->maxw && client->maxh && client->maxw == client->minw && client->maxh == client->minh);
 }
 void client::update_title(client_t* client) {
-  log::debug("[update_title]");
+  //log::debug("[update_title]");
   if (!x11::get_text_prop(client->win, state::netatom[NetWMName], client->name)) {
     x11::get_text_prop(client->win, XA_WM_NAME, client->name);
   }
@@ -425,7 +425,7 @@ client_t* client::next_tiled(client_t* client) {
   return c;
 }
 client_t* client::win_to_client(Window w) {
-  log::debug("[win_to_client]");
+  //log::debug("[win_to_client]");
   client_t *c;
   monitor_t *m;
   
