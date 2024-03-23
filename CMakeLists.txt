@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.17)
 
-project(castle-dwm)
+project(cyd-wm)
 
 # specify the C++ standard
 set(CMAKE_CXX_STANDARD 23)
@@ -43,15 +43,31 @@ enable_cxx_compiler_flag_if_supported("-Wno-cast-function-type")
 
 enable_cxx_compiler_flag_if_supported("-Wno-unknown-pragmas")
 
-include(build/CMakeLists.txt)
-
 include_directories (/usr/include/freetype2)
 
-#add_library(b_config config.h)
-target_sources(castle-dwm PRIVATE config.h)
-target_link_libraries(castle-dwm PUBLIC X11 fontconfig Xft Xinerama)
-#target_link_libraries(castle-dwm PUBLIC program_shell)
-target_link_libraries(castle-dwm PUBLIC yaml-cpp)
-target_link_libraries(castle-dwm PUBLIC cyd_ui)
+FILE(GLOB_RECURSE SRC_LIST
+        ${CMAKE_CURRENT_LIST_DIR}/include/*.c
+        ${CMAKE_CURRENT_LIST_DIR}/include/*.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/include/*.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/*.hh
+        ${CMAKE_CURRENT_LIST_DIR}/include/*.hpp
+        ${CMAKE_CURRENT_LIST_DIR}/src/*.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/src/*.h
+        ${CMAKE_CURRENT_LIST_DIR}/src/*.hpp
+        )
 
+LIST(APPEND EXT_LIBS cydstd cyd_ui cyd_ui_std yaml-cpp X11 Xft Xrender Xinerama fontconfig jpeg)
+
+add_executable(cyd-wm ${SRC_LIST})
+target_link_libraries(cyd-wm PUBLIC ${EXT_LIBS})
+
+FILE(GLOB_RECURSE TEST_LIST
+        ${CMAKE_CURRENT_LIST_DIR}/tests/*.test.cpp)
+FOREACH(ENTRYPOINT IN LISTS TEST_LIST)
+    get_filename_component(ENTRYPOINT_NAME ${ENTRYPOINT} NAME_WE)
+    set(ENTRYPOINT_NAME TEST--${ENTRYPOINT_NAME})
+    add_executable(${ENTRYPOINT_NAME} ${SRC_LIST} ${ENTRYPOINT} )
+    target_link_libraries(${ENTRYPOINT_NAME} PUBLIC ${EXT_LIBS})
+ENDFOREACH()
 add_definitions(-DXINERAMA)

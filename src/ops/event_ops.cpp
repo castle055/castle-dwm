@@ -221,6 +221,10 @@ void ops::event::handlers::keypress(XEvent *e) {
   
   // If not KeyNav, check normal shortcuts
   for (i = 0; i < state::config::keys.size(); i++)
+    //if (((keysym == state::config::keys[i].keysym
+    //    && CLEANMASK(state::config::keys[i].mod) == CLEANMASK(ev->state))
+    //    || (state::config::keys[i].keysym == XK_Meta_L
+    //    || state::config::keys[i].keysym == XK_Meta_R))
     if (keysym == state::config::keys[i].keysym
         && CLEANMASK(state::config::keys[i].mod) == CLEANMASK(ev->state)
         && state::config::keys[i].func)

@@ -5,11 +5,11 @@
 #ifndef CYD_UI_TERMINAL_BUTTON_HPP
 #define CYD_UI_TERMINAL_BUTTON_HPP
 
-#include "../../include/cydui.hpp"
+#include "cyd-ui/dist/include/cydui.hpp"
 #include "button.hpp"
 #include "../tasks/open_terminal_task.hpp"
 
-STATE(TerminalButton)
+STATE(TerminalButton) {
   OpenTerminalTask open_terminal_task;
   
   INIT_STATE(TerminalButton) {
@@ -17,7 +17,7 @@ STATE(TerminalButton)
   }
 };
 
-COMPONENT(TerminalButton)
+COMPONENT(TerminalButton) {
   PROPS({
     std::string cmd;
     bool        hold_after_finish = false;
@@ -29,21 +29,25 @@ COMPONENT(TerminalButton)
   
   std::string full_cmd;
   
-  INIT(TerminalButton)
+  INIT(TerminalButton) {
     full_cmd = get_full_cmd();
   }
   
   REDRAW {
-    WITH_STATE(TerminalButton)
-    
-    ADD_TO(this, ({
-      N(Button, ({
-        .text = "T",
-        .on_action = action {
-          state->open_terminal_task.run(full_cmd.c_str());
+    add({
+      COMP(Button)({
+        .props = {
+          .text = "T",
+          .on_action = action {
+            state->open_terminal_task.run({
+              props.width,
+              props.lines,
+              full_cmd
+            });
+          },
         }
-      })),
-    }))
+      }),
+    });
   }
 
 private:

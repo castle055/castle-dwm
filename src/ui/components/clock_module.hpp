@@ -5,28 +5,25 @@
 #ifndef CYD_UI_CLOCK_MODULE_HPP
 #define CYD_UI_CLOCK_MODULE_HPP
 
-#include <cyd_ui/cydui.hpp>
-#include "button.hpp"
-#include "../tasks/open_terminal_task.hpp"
+#include "cydui/cydui.hpp"
+#include "./button.hpp"
 
 #include <ctime>
 
-STATE(ClockModule)
+STATE(ClockModule) {
   INIT_STATE(ClockModule) {
     
   }
 };
 
-COMPONENT(ClockModule)
+COMPONENT(ClockModule) {
   PROPS({
   })
   
-  INIT(ClockModule)
+  INIT(ClockModule) {
   }
   
   REDRAW {
-    WITH_STATE(ClockModule)
-    
     std::time_t t = std::time(0);
     std::string time;
     std::tm* now = std::localtime(&t);
@@ -45,14 +42,14 @@ COMPONENT(ClockModule)
       time.append(std::to_string(now->tm_min));
     }
     
-    ADD_TO(this, ({
-      N(Button, ({
-        .text = time,
-        //.on_action = action { }
-      }), ({ }), {
-        thisButton->set_width(50);
+    add({
+      COMP(Button)({
+        .props = {
+          .text = time,
+        },
+        .w = 50,
       }),
-    }))
+    });
   }
 };
 

@@ -374,6 +374,7 @@ void control::view(const Arg *arg) {
   
   client::focus(nullptr);
   monitor::arrange(state::selmon);
+  bar::update_all();
 }
 void control::zoom(const Arg *arg) {
   client_t *c = state::selmon->sel;
