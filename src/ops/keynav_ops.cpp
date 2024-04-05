@@ -31,7 +31,7 @@ key_nav_target internal = {
     .description = "internal",
     .type = NAV_DIR,
     .map = {
-        { XK_r, &int_reload_kn },
+        { XK_r, int_reload_kn },
     }
 };
 
@@ -39,8 +39,8 @@ key_nav_target keynav::root {};
 
 void keynav::reset_map() {
   root.map.clear();
-  root.map[XK_i] = &internal;
-  root.map[XK_d] = &dmenu_target;
+  root.map.emplace(XK_i, internal);
+  root.map.emplace(XK_d, dmenu_target);
 }
 
 void keynav::reset() {
@@ -57,15 +57,19 @@ bool keynav::process(XKeyEvent* ev) {
   KeySym keysym = XKeycodeToKeysym(state::dpy, (KeyCode) ev->keycode, 0);
   // Navigate if KeyNav active
   if (state::key_nav::accepting) {
-    log::info("[key_nav] gotcha: %d", keysym);
-    if (keysym == XK_Escape) {
+    //log::info("[key_nav] gotcha: %d", keysym);
+    // Check if KeyNav trigger
+    //log::info("[keypress] KeySym: %s", XKeysymToString(keysym));
+    if ((keysym == state::config::key_nav::trigger.keysym
+      && CLEANMASK(state::config::key_nav::trigger.mod) == CLEANMASK(ev->state))
+      || keysym == XK_Escape) {
       reset();
       return true;
     }
     
     auto next_target = state::key_nav::current->map.find(keysym);
     if (next_target != state::key_nav::current->map.end()) {
-      key_nav_target* target = next_target->second;
+      key_nav_target* target = &next_target->second;
       switch (target->type) {
         case NAV_DIR:
           state::key_nav::current = target;
@@ -92,6 +96,7 @@ bool keynav::process(XKeyEvent* ev) {
     return true;
   } else {
     // Check if KeyNav trigger
+    //log::info("[keypress] KeySym: %s", XKeysymToString(keysym));
     if (keysym == state::config::key_nav::trigger.keysym
         && CLEANMASK(state::config::key_nav::trigger.mod) == CLEANMASK(ev->state)) {
       state::key_nav::accepting = true;

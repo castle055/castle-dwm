@@ -271,7 +271,7 @@ void ops::event::handlers::propertynotify(XEvent *e) {
   XPropertyEvent *ev = &e->xproperty;
   
   if ((ev->window == state::root) && (ev->atom == XA_WM_NAME))
-    x11::update_status();
+    bar::update_all();
   else if (ev->state == PropertyDelete)
     return; /* ignore */
   else if ((c = client::win_to_client(ev->window))) {

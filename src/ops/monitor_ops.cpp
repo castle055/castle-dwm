@@ -340,33 +340,33 @@ monitor_t *monitor::create_mon() {
   m->gappx = state::config::gappx;
   m->lt[0] = &state::config::layouts[0];
   m->lt[1] = &state::config::layouts[1 % state::config::layouts.size()];
-  log::debug("[create_mon] Copy layout symbol into monitor struct");
+  //log::debug("[create_mon] Copy layout symbol into monitor struct");
   strncpy(m->ltsymbol, state::config::layouts[0].symbol, sizeof m->ltsymbol);
-  log::debug("[create_mon] Allocating monitor pertag");
+  //log::debug("[create_mon] Allocating monitor pertag");
   try {
-  m->pertag = new Pertag;//(Pertag *) ecalloc(1, sizeof(Pertag));
-  m->pertag->curtag = m->pertag->prevtag = 1;
-  
-  size_t tags_len = state::config::TAGS.size();
-  log::debug("[create_mon] Configuring monitor tags");
-  for (i = 0; i < tags_len; i++) {
-    log::debug("[create_mon] Configuring monitor tag [%d]", i);
-    m->pertag->nmasters.resize(tags_len);
-    m->pertag->nmasters[i] = m->nmaster;
-    m->pertag->mfacts.resize(tags_len);
-    m->pertag->mfacts[i] = m->mfact;
-  
-    m->pertag->ltidxs.resize(tags_len);
-    m->pertag->ltidxs[i][0] = m->lt[0];
-    m->pertag->ltidxs[i][1] = m->lt[1];
-    m->pertag->sellts.resize(tags_len);
-    m->pertag->sellts[i] = m->sellt;
-  
-    m->pertag->showbars.resize(tags_len);
-    m->pertag->showbars[i] = m->showbar;
-  }
+    m->pertag = new Pertag;//(Pertag *) ecalloc(1, sizeof(Pertag));
+    m->pertag->curtag = m->pertag->prevtag = 1;
+    
+    size_t tags_len = state::config::TAGS.size();
+    log::debug("[create_mon] Configuring monitor tags");
+    for (i = 0; i < tags_len; i++) {
+      log::debug("[create_mon] Configuring monitor tag [%d]", i);
+      m->pertag->nmasters.resize(tags_len);
+      m->pertag->nmasters[i] = m->nmaster;
+      m->pertag->mfacts.resize(tags_len);
+      m->pertag->mfacts[i] = m->mfact;
+      
+      m->pertag->ltidxs.resize(tags_len);
+      m->pertag->ltidxs[i][0] = m->lt[0];
+      m->pertag->ltidxs[i][1] = m->lt[1];
+      m->pertag->sellts.resize(tags_len);
+      m->pertag->sellts[i] = m->sellt;
+      
+      m->pertag->showbars.resize(tags_len);
+      m->pertag->showbars[i] = m->showbar;
+    }
   } catch (const std::bad_alloc& e) {
-      log::error("[create_mon] Bad alloc on Pertags");
+    log::error("[create_mon] Bad alloc on Pertags");
   }
   
   return m;

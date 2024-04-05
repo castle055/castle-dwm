@@ -11,7 +11,7 @@ namespace ops::log {
   void info   (const char* format, ...);
   void warn   (const char* format, ...);
   void error  (const char* format, ...);
-};
+}
 
 
 #endif //CASTLE_DWM_LOG_OPS_H

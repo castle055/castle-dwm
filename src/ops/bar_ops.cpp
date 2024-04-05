@@ -20,54 +20,45 @@ logging::logger bar_log = {.name = "BAR_OPS", .on = false};
 static void init_bar(monitor_t* mon) {
   monitor_bar_t* bar = &(mon->bar);
   bar_log.info("=== INITIALIZING BAR");
-  cydui::layout::Layout* layout = cydui::layout::create<Workspaces>({.props = {&bar->wstatus}});
-  cydui::layout::Layout* layout1 = cydui::layout::create<WinTitle>({});
+  //cydui::layout::Layout* layout1 = cydui::layout::create<WinTitle>({});
   
   // Create the window that will display the layout
-  cydui::window::CWindow* win = cydui::window::create(
-    layout,
+  bar->wwin = cydui::window::create(
+    cydui::layout::create(cyd_wm::CydWMStatusBar{{.status = &bar->wstatus}}),
     "Workspace Selector",
     "castle-dwm-ui",
     mon->wx, mon->by + 0, // X, Y of the window
-    280, 23, // W, H of the window
+    mon->ww, 26, // W, H of the window
     true
   );
-  bar->wlay         = layout;
-  bar->wwin         = win;
-  
-  cydui::window::CWindow* win1 = cydui::window::create(
-    layout1,
-    "Window Status",
-    "castle-dwm-ui",
-    mon->wx + 290, mon->by + 0, // X, Y of the window
-    350, 23, // W, H of the window
-    true
-  );
-  bar->tlay         = layout1;
-  bar->twin         = win1;
-  
-  events::on_event<WorkspaceEvent>(events::Consumer<WorkspaceEvent>([mon,win](const events::ParsedEvent<WorkspaceEvent>& it){
-    bar_log.info("=== ANSWERING TO WS EVENT");
-    if (it.data->win != (unsigned int)win->win_ref->xwin) return;
-    if (it.data->start_menu) {
-      const Arg a {.v = "startmenu"};
-      ops::control::spawn(&a);
-    } else {
-      const Arg a {.ui = (unsigned int)mon->bar.wstatus.selected_workspaces};
-      state::selmon = mon; // Select which ever monitor the selector was clicked on
-      ops::control::view(&a); // Go to selected workspace
-    }
-  }));
-  
-  //m->barwin = win->win_ref->xwin;//x11::create_barwin(m->wx, m->by, m->ww);
-  mon->barwin = x11::create_barwin(mon->wx+mon->bar.wlen, mon->by, mon->ww-mon->bar.wlen);
   bars[mon->num] = {
     mon->ww,
-    mon->barwin,
+    0,//mon->barwin,
     0,
   };
-  
   bar->init = true;
+  //bar->wlay         = layout;
+  
+  bar->wwin->on_event<cyd_wm::WorkspaceEvent>(
+    cydui::async::Consumer<cyd_wm::WorkspaceEvent>(
+      [mon](const cydui::async::ParsedEvent<cyd_wm::WorkspaceEvent>& it){
+        //bar_log.info("=== ANSWERING TO WS EVENT");
+        //printf("=== ANSWERING TO WS EVENT (win: %lX ?= %lX)\n", get_id(win->win_ref), it.data->win);
+        if (it.data->start_menu) {
+          const Arg a {.v = "startmenu"};
+          //ops::control::spawn(&a);
+        } else {
+          const Arg a {.ui = (unsigned int)mon->bar.wstatus.selected_workspaces};
+          //printf("=== selection: %09b\n", mon->bar.wstatus.selected_workspaces);
+          state::selmon = mon; // Select which ever monitor the selector was clicked on
+          ops::control::view(&a); // Go to selected workspace
+        }
+  }));
+  
+  //mon->barwin = get_id(win->win_ref);//x11::create_barwin(m->wx, m->by, m->ww);
+  //mon->barwin = x11::create_barwin(mon->wx+mon->bar.wlen, mon->by, mon->ww-mon->bar.wlen);
+  
+  bar_log.info("=== BAR INITIALIZED");
 }
 
 void bar::init_where_needed() {
@@ -82,174 +73,28 @@ void bar::init_where_needed() {
   }
 }
 
-int draw_statusbar(int width) {
-  const char* stext = state::stext.c_str();
-  int ret, i, w, x;
-  unsigned int len;
-  short isCode = 0;
-  char *text;
-  char *p;
-  
-  len = strlen(stext) + 1;
-  if (!(text = (char *) malloc(sizeof(char) * len)))
-    die("malloc");
-  p = text;
-  memcpy(text, stext, len);
-  
-  /* compute width of the status text */
-  w = 0;
-  i = -1;
-  while (text[++i]) {
-    if (text[i] == '^') {
-      if (!isCode) {
-        isCode = 1;
-        text[i] = '\0';
-        w += (int)TEXTW_CSTR(text) - state::lrpad;
-        text[i] = '^';
-        if (text[++i] == 'f')
-          w += atoi(text + ++i);
-      } else {
-        isCode = 0;
-        text = text + i + 1;
-        i = -1;
-      }
-    }
-  }
-  if (!isCode)
-    w += (int)TEXTW_CSTR(text) - state::lrpad;
-  else
-    isCode = 0;
-  text = p;
-  
-  w += 2; /* 1px padding on both sides */
-  ret = x = width - w;
-  
-  drw_setscheme(state::drw, state::scheme[state::config::colors.size()]);
-  state::drw->scheme[ColFg] = state::scheme[SchemeNorm][ColFg];
-  state::drw->scheme[ColBg] = state::scheme[SchemeNorm][ColBg];
-  drw_rect(state::drw, x, 0, w, state::bar_height, 1, 1);
-  x++;
-  
-  /* process status text */
-  i = -1;
-  while (text[++i]) {
-    if (text[i] == '^' && !isCode) {
-      isCode = 1;
-      
-      text[i] = '\0';
-      w = TEXTW_CSTR(text) - state::lrpad;
-      drw_text(state::drw, x, state::bar_height / 2, w, 0, 0, text, 0);
-      
-      x += w;
-      
-      /* process code */
-      while (text[++i] != '^') {
-        if (text[i] == 'c') {
-          char buf[8];
-          memcpy(buf, (char *) text + i + 1, 7);
-          buf[7] = '\0';
-          drw_clr_create(state::drw, &state::drw->scheme[ColFg], buf);
-          i += 7;
-        } else if (text[i] == 'b') {
-          char buf[8];
-          memcpy(buf, (char *) text + i + 1, 7);
-          buf[7] = '\0';
-          drw_clr_create(state::drw, &state::drw->scheme[ColBg], buf);
-          i += 7;
-        } else if (text[i] == 'd') {
-          state::drw->scheme[ColFg] = state::scheme[SchemeNorm][ColFg];
-          state::drw->scheme[ColBg] = state::scheme[SchemeNorm][ColBg];
-        } else if (text[i] == 'r') {
-          int rx = atoi(text + ++i);
-          while (text[++i] != ',');
-          int ry = atoi(text + ++i);
-          while (text[++i] != ',');
-          int rw = atoi(text + ++i);
-          while (text[++i] != ',');
-          int rh = atoi(text + ++i);
-          
-          drw_rect(state::drw, rx + x, ry, rw, rh, 1, 0);
-        } else if (text[i] == 'a') {
-          int rx = atoi(text + ++i);
-          while (text[++i] != ',');
-          int ry = atoi(text + ++i);
-          while (text[++i] != ',');
-          int rw = atoi(text + ++i);
-          while (text[++i] != ',');
-          int rh = atoi(text + ++i);
-          while (text[++i] != ',');
-          int rang1 = atoi(text + ++i);
-          while (text[++i] != ',');
-          int rang2 = atoi(text + ++i);
-          
-          drw_arc(state::drw, rx + x, ry, rw, rh, rang1 * 64, rang2 * 64, 0, 0);
-        } else if (text[i] == 'A') {
-          int rx = atoi(text + ++i);
-          while (text[++i] != ',');
-          int ry = atoi(text + ++i);
-          while (text[++i] != ',');
-          int rw = atoi(text + ++i);
-          while (text[++i] != ',');
-          int rh = atoi(text + ++i);
-          while (text[++i] != ',');
-          int rang1 = atoi(text + ++i);
-          while (text[++i] != ',');
-          int rang2 = atoi(text + ++i);
-          
-          drw_arc(state::drw, rx + x, ry, rw, rh, rang1 * 64, rang2 * 64, 1, 0);
-        } else if (text[i] == 'l') {
-          int rx1 = atoi(text + ++i);
-          while (text[++i] != ',');
-          int ry1 = atoi(text + ++i);
-          while (text[++i] != ',');
-          int rx2 = atoi(text + ++i);
-          while (text[++i] != ',');
-          int ry2 = atoi(text + ++i);
-          
-          drw_line(state::drw, rx1 + x, ry1, rx2 + x, ry2);
-        } else if (text[i] == 'p') {
-          int rx1 = atoi(text + ++i);
-          while (text[++i] != ',');
-          int ry1 = atoi(text + ++i);
-          
-          drw_rect(state::drw, rx1, ry1, 2, 2, 1, 0);
-        } else if (text[i] == 'f') {
-          x += atoi(text + ++i);
-        }
-      }
-      
-      text = text + i + 1;
-      i = -1;
-      isCode = 0;
-    }
-  }
-  
-  if (!isCode) {
-    w = TEXTW_CSTR(text) - state::lrpad;
-    drw_text(state::drw, x, 0, w, state::bar_height, 0, text, 0);
-  }
-  
-  drw_setscheme(state::drw, state::scheme[SchemeNorm]);
-  free(p);
-  
-  return ret;
-}
-
 void update_bar(monitor_t* monitor, bar_t bar) {
-  int x = 0, w, tw = 0;
-  int boxs = state::drw->fonts->h / 9;
-  int boxw = state::drw->fonts->h / 6 + 2;
+  bar_log.info("=== UPDATING BAR");
+  if (monitor->sel == nullptr || !monitor->sel->isfullscreen) {
+    XRaiseWindow(state::dpy, get_id(monitor->bar.wwin->win_ref));
+  }
+  
+  //int x = 0, w, tw = 0;
+  //int boxs = state::drw->fonts->h / 9;
+  //int boxw = state::drw->fonts->h / 6 + 2;
   unsigned int i, occ = 0, urg = 0;
   client_t *c;
   
   // Draws rectangle over all bar so that there are no glitches
-  XLockDisplay(state::dpy);
-  drw_setscheme(state::drw, state::scheme[monitor == state::selmon ? SchemeSel : SchemeNorm]);
-  drw_rect(state::drw, x, 0, monitor->ww-monitor->bar.wlen, state::bar_height, 1, 1);
+  //XLockDisplay(state::dpy);
+  ////drw_setscheme(state::drw, state::scheme[monitor == state::selmon ? SchemeSel : SchemeNorm]);
+  ////drw_rect(state::drw, x, 0, monitor->ww-monitor->bar.wlen, state::bar_height, 1, 1);
   
-  /* draw status first so it can be overdrawn by TAGS later */
+  /* draw status first, so it can be overdrawn by TAGS later */
   //if (m == selmon || 1) { /* status is only drawn on selected monitor */
-  tw = monitor->ww - draw_statusbar(monitor->ww - monitor->bar.wlen);
+  
+  ////tw = monitor->ww - draw_statusbar(monitor->ww - monitor->bar.wlen);
+  
   //if (m == selmon) { /* status is only drawn on selected monitor */
   //	drw_setscheme(drw, scheme[SchemeNorm]);
   //	tw = TEXTW(stext) - lrpad + 2; /* 2px right padding */
@@ -271,76 +116,67 @@ void update_bar(monitor_t* monitor, bar_t bar) {
   //             urg & 1 << i);
   //  x += w;
   //}
-  events::emit<WindowStatusUpdate>({
-    .win = (unsigned int)monitor->bar.twin->win_ref->xwin,
-    .type = win_status_update_t::LAYOUT_SYMBOL,
-    .str1 = monitor->ltsymbol,
-  });
+  
+  //cydui::events::emit<cyd_wm::WindowStatusUpdate>({
+  //  .win = get_id(monitor->bar.wwin->win_ref),
+  //  .type = cyd_wm::win_status_update_t::LAYOUT_SYMBOL,
+  //  .str1 = monitor->ltsymbol,
+  //});
+  
   //w = state::blw = TEXTW_CSTR(monitor->ltsymbol);
   //drw_setscheme(state::drw, state::scheme[SchemeNorm]);
   //x = drw_text(state::drw, x, 3, w, state::bar_height - 6, state::lrpad / 2, monitor->ltsymbol, 0);
   
-  if (monitor == state::selmon && state::key_nav::accepting) {
-    unsigned int kn_width = TEXTW_CSTR(state::key_nav::current_path.c_str());
-    x = drw_text(state::drw, x, 3, kn_width, state::bar_height - 6, state::lrpad / 2, state::key_nav::current_path.c_str(), 1);
-    
-    for (const auto &target : state::key_nav::current->map) {
-      std::string s;
-      s.append(XKeysymToString(target.first));
-      s.append("- ");
-      s.append(target.second->description);
-      kn_width = TEXTW_CSTR(s.c_str());
-      x = drw_text(state::drw, x, 3, kn_width, state::bar_height - 6, state::lrpad / 2, s.c_str(), 0);
-    }
-    
-    if (bar.suggestion_window == 0) {
-      int sw_height = state::key_nav::current->map.size() / 3 + 1;
-//      bar.suggestion_window = x11::create_barwin(monitor->wx, sw_height, monitor->ww);
-    }
-  } else {
-    if (bar.suggestion_window != 0) {
-//      x11::destroy_barwin(bar.suggestion_window);
-      bar.suggestion_window = 0;
-    }
-  }
+// //  if (monitor == state::selmon && state::key_nav::accepting) {
+// //    unsigned int kn_width = TEXTW_CSTR(state::key_nav::current_path.c_str());
+// //    x = drw_text(state::drw, x, 3, kn_width, state::bar_height - 6, state::lrpad / 2, state::key_nav::current_path.c_str(), 1);
+// //
+// //    for (const auto &target : state::key_nav::current->map) {
+// //      std::string s;
+// //      s.append(XKeysymToString(target.first));
+// //      s.append("- ");
+// //      s.append(target.second->description);
+// //      kn_width = TEXTW_CSTR(s.c_str());
+// //      x = drw_text(state::drw, x, 3, kn_width, state::bar_height - 6, state::lrpad / 2, s.c_str(), 0);
+// //    }
+// //
+// //    if (bar.suggestion_window == 0) {
+// //      int sw_height = state::key_nav::current->map.size() / 3 + 1;
+// ////      bar.suggestion_window = x11::create_barwin(monitor->wx, sw_height, monitor->ww);
+// //    }
+// //  } else {
+// //    if (bar.suggestion_window != 0) {
+// ////      x11::destroy_barwin(bar.suggestion_window);
+// //      bar.suggestion_window = 0;
+// //    }
+// //  }
   
-  if ((w = monitor->ww - tw - x) > state::bar_height) {
-    if (monitor->sel) {
-      //drw_setscheme(state::drw, state::scheme[monitor == state::selmon ? SchemeSel : SchemeNorm]);
-      //drw_text(state::drw, x, 0, w, state::bar_height, (state::lrpad + w - TEXTW(monitor->sel->name)) / 2, monitor->sel->name.c_str(), 0);
-      events::emit<WindowStatusUpdate>({
-        .win = (unsigned int)monitor->bar.twin->win_ref->xwin,
-        .type = win_status_update_t::WINDOW_TITLE,
-        .str1 = monitor->sel->name,
-      });
-      if (monitor->sel->isfloating)
-        drw_rect(state::drw, x + boxs + 4, 3, w - 8, state::bar_height - 6, monitor->sel->isfixed, 0);
-    } else {
-      drw_setscheme(state::drw, state::scheme[SchemeNorm]);
-      drw_rect(state::drw, x, 0, w, state::bar_height, 1, 1);
-      events::emit<WindowStatusUpdate>({
-        .win = (unsigned int)monitor->bar.twin->win_ref->xwin,
-        .type = win_status_update_t::WINDOW_TITLE,
-        .str1 = "",
-      });
-    }
-  }
-  drw_map(state::drw, bar.win, 0, 0, bar.width, state::bar_height);
-  
-  XUnlockDisplay(state::dpy);
-  monitor->bar.wstatus.occupied_workspaces = (int)occ;
-  monitor->bar.wstatus.selected_workspaces = (int)(monitor->tagset[monitor->seltags]);
-  events::emit<RedrawEvent>({.win = (unsigned int)monitor->bar.wwin->win_ref->xwin});
-  events::emit<RedrawEvent>({.win = (unsigned int)monitor->bar.twin->win_ref->xwin});
+  //if ((w = monitor->ww - tw - x) > state::bar_height) {
+    monitor->bar.wwin->emit<cyd_wm::WindowStatusUpdate>({
+      .win = get_id(monitor->bar.wwin->win_ref),
+      .type = cyd_wm::win_status_update_t::WINDOW_TITLE,
+      .str1 = monitor->sel? monitor->sel->name : "",
+    });
+    monitor->bar.wwin->emit<cyd_wm::ui::KeynavUpdate>({
+      .win = get_id(monitor->bar.wwin->win_ref),
+      .current = (monitor == state::selmon && state::key_nav::accepting)
+                 ? std::optional{state::key_nav::current}
+                 : std::nullopt,
+    });
+    monitor->bar.wwin->emit<RedrawEvent>({.win = get_id(monitor->bar.wwin->win_ref)});
+    //}
+    
+    monitor->bar.wstatus.occupied_workspaces = (int)occ;
+    monitor->bar.wstatus.selected_workspaces = (int)(monitor->tagset[monitor->seltags]);
+    //cydui::events::emit<RedrawEvent>({.win = get_id(monitor->bar.wwin->win_ref)});
+    bar_log.info("=== BAR UPDATED");
 }
 
 void bar::update_all() {
   for (monitor_t* m = state::mons; m; m = m->next) {
-    auto bar_iter = bars.find(m->num);
-    if (bar_iter == bars.end())
-      continue;
-    
-    bar_t bar = bar_iter->second;
-    update_bar(m, bar);
+    if (bars.contains(m->num)) {
+      bar_t bar = bars[m->num];
+      update_bar(m, bar);
+    }
   }
 }
