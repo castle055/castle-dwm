@@ -17,7 +17,7 @@ namespace cyd_wm::ui {
   
   COMPONENT(KeynavTargetItem, {
     theme_t *theme = theme_t::default_theme();
-    const key_nav_target& target;
+    key_nav_target target;
     KeySym keysym;
   }) {
     ON_REDRAW { return { }; }
