@@ -35,33 +35,33 @@ static std::string to_roman(int n) {
 }
 
 namespace cyd_wm::ui {
-    static std::function<void(int button)> selector_action(WorkspaceStatus* status, int num, unsigned int win) {
+    static std::function<void(int button)> selector_action(WorkspaceStatus* status, int num, cydui::window::CWindow* win) {
       return [status, win, num](int button) {
         //printf("win(%X)\n", win);
         if (button == 1) {
           status->selected_workspaces = (1 << num);
-          cydui::events::emit<WorkspaceEvent>({.win = win});
+          win->emit<WorkspaceEvent>({});
         } else if (button == 3) {
           status->selected_workspaces = (status->selected_workspaces ^ (1 << num));
           //printf("AFT: %09b\n", status->selected_workspaces);
-          cydui::events::emit<WorkspaceEvent>({.win = win});
+          win->emit<WorkspaceEvent>({});
         }
-        cydui::events::emit<RedrawEvent>({.win = win});
+        win->emit<RedrawEvent>({});
       };
     }
     
-    static std::function<void(int button)> all_selector_action(WorkspaceStatus* status, unsigned int win) {
+    static std::function<void(int button)> all_selector_action(WorkspaceStatus* status, cydui::window::CWindow* win) {
       return [status, win](int button) {
         if (button == 1) {
           status->selected_workspaces = 0b111111111;
-          cydui::events::emit<WorkspaceEvent>({.win = win});
+          win->emit<WorkspaceEvent>({});
         }
-        cydui::events::emit<RedrawEvent>({.win = win});
+        win->emit<RedrawEvent>({});
       };
     }
     
     COMPONENT(HomeBanner, {
-      theme_t *theme = &default_theme;
+      theme_t *theme = theme_t::default_theme();
       WorkspaceStatus* status;
     } STATE {
       bool is_hovering = false;
@@ -81,7 +81,7 @@ namespace cyd_wm::ui {
                   .label = to_roman(i + 1),
                   .occupied = (props->status->occupied_workspaces & (1 << (i))) > 0,
                   .selected = (props->status->selected_workspaces & (1 << (i))) > 0,
-                  .on_click = selector_action(props->status, i, get_id(state->win->win_ref)),
+                  .on_click = selector_action(props->status, i, window),
                 }}
                   .x(50 + i * 24)
                   .w(24)
@@ -94,7 +94,7 @@ namespace cyd_wm::ui {
             .select_all = true,
             .occupied = props->status->occupied_workspaces == 0b111111111,
             .selected = props->status->selected_workspaces == 0b111111111,
-            .on_click = all_selector_action(props->status, get_id(state->win->win_ref)),
+            .on_click = all_selector_action(props->status, window),
           }}
             .x(50 + 9 * 24)
             .w(24)

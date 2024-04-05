@@ -67,7 +67,7 @@ pkg_check_modules(CAIROMM-1.16 REQUIRED cairomm-1.16)
 include_directories(${CAIROMM-1.16_INCLUDE_DIRS})
 
 LIST(APPEND EXT_LIBS
-        cydstd /home/castle/repos/inhouse/cyd-ui/cmake-build-release/libcyd_ui.a
+        cydstd cyd_ui
         X11 Xft Xrender Xinerama xcb
         yaml-cpp fontconfig jpeg ${CAIROMM-1.16_LIBRARIES} sensors)
 

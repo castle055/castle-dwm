@@ -10,12 +10,11 @@
 
 namespace cyd_wm::ui {
   COMPONENT(WindowBanner, {
-    theme_t *theme = &default_theme;
+    theme_t *theme = theme_t::default_theme();
   } STATE {
     std::string window_title;
   }) {
     ON_CUSTOM_EVENTS(ON_EVENT(WindowStatusUpdate, {
-      if (get_id(state->win->win_ref) != ev->win) return;
       if (ev->type == win_status_update_t::WINDOW_TITLE) {
         state->window_title = ev->str1;
         state->force_redraw();

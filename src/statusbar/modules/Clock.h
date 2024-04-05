@@ -13,7 +13,7 @@
 
 namespace cyd_wm::ui {
     COMPONENT(Clock, {
-      theme_t &theme = default_theme;
+      theme_t &theme = *theme_t::default_theme();
     } STATE {
       std::string time_str = "--:--";
       

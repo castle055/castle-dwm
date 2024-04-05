@@ -145,7 +145,7 @@ namespace cyd_wm::ui {
       }
     };
     COMPONENT_TEMPLATE(IconRibbon, {
-      theme_t *theme = &default_theme;
+      theme_t *theme = theme_t::default_theme();
       int icon_size = 12;
     }) {
       ON_REDRAW {

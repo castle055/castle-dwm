@@ -20,30 +20,33 @@ logging::logger bar_log = {.name = "BAR_OPS", .on = false};
 static void init_bar(monitor_t* mon) {
   monitor_bar_t* bar = &(mon->bar);
   bar_log.info("=== INITIALIZING BAR");
-  cydui::layout::Layout* layout = cydui::layout::create<cyd_wm::CydWMStatusBar>(cyd_wm::CydWMStatusBar{{.status = &bar->wstatus}});
   //cydui::layout::Layout* layout1 = cydui::layout::create<WinTitle>({});
   
   // Create the window that will display the layout
-  cydui::window::CWindow* win = cydui::window::create(
-    layout,
+  bar->wwin = cydui::window::create(
+    cydui::layout::create(cyd_wm::CydWMStatusBar{{.status = &bar->wstatus}}),
     "Workspace Selector",
     "castle-dwm-ui",
     mon->wx, mon->by + 0, // X, Y of the window
     mon->ww, 26, // W, H of the window
     true
   );
-  bar->wwin         = win;
+  bars[mon->num] = {
+    mon->ww,
+    0,//mon->barwin,
+    0,
+  };
+  bar->init = true;
   //bar->wlay         = layout;
   
-  cydui::events::on_event<cyd_wm::WorkspaceEvent>(
-    cydui::events::Consumer<cyd_wm::WorkspaceEvent>(
-      [mon,win](const cydui::events::ParsedEvent<cyd_wm::WorkspaceEvent>& it){
+  bar->wwin->on_event<cyd_wm::WorkspaceEvent>(
+    cydui::async::Consumer<cyd_wm::WorkspaceEvent>(
+      [mon](const cydui::async::ParsedEvent<cyd_wm::WorkspaceEvent>& it){
         //bar_log.info("=== ANSWERING TO WS EVENT");
         //printf("=== ANSWERING TO WS EVENT (win: %lX ?= %lX)\n", get_id(win->win_ref), it.data->win);
-        if (it.data->win != get_id(win->win_ref)) return;
         if (it.data->start_menu) {
           const Arg a {.v = "startmenu"};
-          ops::control::spawn(&a);
+          //ops::control::spawn(&a);
         } else {
           const Arg a {.ui = (unsigned int)mon->bar.wstatus.selected_workspaces};
           //printf("=== selection: %09b\n", mon->bar.wstatus.selected_workspaces);
@@ -54,13 +57,7 @@ static void init_bar(monitor_t* mon) {
   
   //mon->barwin = get_id(win->win_ref);//x11::create_barwin(m->wx, m->by, m->ww);
   //mon->barwin = x11::create_barwin(mon->wx+mon->bar.wlen, mon->by, mon->ww-mon->bar.wlen);
-  bars[mon->num] = {
-    mon->ww,
-    0,//mon->barwin,
-    0,
-  };
   
-  bar->init = true;
   bar_log.info("=== BAR INITIALIZED");
 }
 
@@ -82,9 +79,9 @@ void update_bar(monitor_t* monitor, bar_t bar) {
     XRaiseWindow(state::dpy, get_id(monitor->bar.wwin->win_ref));
   }
   
-  int x = 0, w, tw = 0;
-  int boxs = state::drw->fonts->h / 9;
-  int boxw = state::drw->fonts->h / 6 + 2;
+  //int x = 0, w, tw = 0;
+  //int boxs = state::drw->fonts->h / 9;
+  //int boxw = state::drw->fonts->h / 6 + 2;
   unsigned int i, occ = 0, urg = 0;
   client_t *c;
   
@@ -155,18 +152,18 @@ void update_bar(monitor_t* monitor, bar_t bar) {
 // //  }
   
   //if ((w = monitor->ww - tw - x) > state::bar_height) {
-    cydui::events::emit<cyd_wm::WindowStatusUpdate>({
+    monitor->bar.wwin->emit<cyd_wm::WindowStatusUpdate>({
       .win = get_id(monitor->bar.wwin->win_ref),
       .type = cyd_wm::win_status_update_t::WINDOW_TITLE,
       .str1 = monitor->sel? monitor->sel->name : "",
     });
-    cydui::events::emit<cyd_wm::ui::KeynavUpdate>({
+    monitor->bar.wwin->emit<cyd_wm::ui::KeynavUpdate>({
       .win = get_id(monitor->bar.wwin->win_ref),
       .current = (monitor == state::selmon && state::key_nav::accepting)
                  ? std::optional{state::key_nav::current}
                  : std::nullopt,
     });
-    cydui::events::emit<RedrawEvent>({.win = get_id(monitor->bar.wwin->win_ref)});
+    monitor->bar.wwin->emit<RedrawEvent>({.win = get_id(monitor->bar.wwin->win_ref)});
     //}
     
     monitor->bar.wstatus.occupied_workspaces = (int)occ;

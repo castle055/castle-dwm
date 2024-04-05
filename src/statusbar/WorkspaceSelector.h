@@ -11,7 +11,7 @@
 
 namespace cyd_wm::ui {
     COMPONENT(WorkspaceSelector, {
-      theme_t *theme = &default_theme;
+      theme_t *theme = theme_t::default_theme();
       std::string label = "-";
       bool select_all = false;
       bool occupied = false;

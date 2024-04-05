@@ -25,9 +25,12 @@ namespace cyd_wm {
     
     std::string font = "Poiret One";
     std::string font2 = "Hurmit Nerd Font";
+    
+    static theme_t* default_theme() {
+      static theme_t t{};
+      return &t;
+    }
   };
-  
-  static theme_t default_theme {};
   
   EVENT(WorkspaceEvent, {
     unsigned long win = 0U;

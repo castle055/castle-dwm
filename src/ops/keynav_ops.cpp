@@ -31,7 +31,7 @@ key_nav_target internal = {
     .description = "internal",
     .type = NAV_DIR,
     .map = {
-        { XK_r, &int_reload_kn },
+        { XK_r, int_reload_kn },
     }
 };
 
@@ -39,8 +39,8 @@ key_nav_target keynav::root {};
 
 void keynav::reset_map() {
   root.map.clear();
-  root.map[XK_i] = &internal;
-  root.map[XK_d] = &dmenu_target;
+  root.map.emplace(XK_i, internal);
+  root.map.emplace(XK_d, dmenu_target);
 }
 
 void keynav::reset() {
@@ -69,7 +69,7 @@ bool keynav::process(XKeyEvent* ev) {
     
     auto next_target = state::key_nav::current->map.find(keysym);
     if (next_target != state::key_nav::current->map.end()) {
-      key_nav_target* target = next_target->second;
+      key_nav_target* target = &next_target->second;
       switch (target->type) {
         case NAV_DIR:
           state::key_nav::current = target;

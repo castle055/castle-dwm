@@ -26,6 +26,7 @@ namespace cyd_wm::ui::icons {
     struct icon_base;
     struct icon_baseEventHandler: public cydui::components::event_handler_t {
       cydui::components::component_state_t* state = nullptr;
+      cydui::window::CWindow* window = nullptr;
       icon_base_props_t* props = nullptr;
       attrs_component<icon_base>* attrs = nullptr;
       

@@ -122,7 +122,7 @@ void x11::update_client_list() {
                       (unsigned char *) &(c->win), 1);
 }
 int x11::update_geometry() {
-  log::info("Updating geometry");
+  //log::info("Updating geometry");
   int dirty = 0;
 
   if (XineramaIsActive(state::dpy)) {
@@ -222,51 +222,51 @@ void x11::update_numlock_mask() {
         state::numlockmask = (1 << i);
   XFreeModifiermap(modmap);
 }
-void x11::update_status() {
-  monitor_t *m;
-  if (!x11::get_text_prop(state::root, XA_WM_NAME, state::stext))
-    state::stext = "dwm-VERSION";
-  bar::update_all();
-}
+//void x11::update_status() {
+//  monitor_t *m;
+//  //if (!x11::get_text_prop(state::root, XA_WM_NAME, state::stext))
+//  //  state::stext = "dwm-VERSION";
+//  bar::update_all();
+//}
 
-Window create_window(
-    const char* name,
-    const char* clas,
-    int x,
-    int y,
-    int w,
-    int h
-) {
-  XSetWindowAttributes wa = {
-      .background_pixmap = ParentRelative,
-      .event_mask = ButtonPressMask | ExposureMask,
-      .override_redirect = True
-  };
-  XClassHint ch = {"dwm", "dwm"};
-  Window barwin = XCreateWindow(
-    state::dpy,
-    state::root,
-    x,
-    y,
-    w,
-    state::bar_height,
-    0,
-    DefaultDepth(state::dpy, state::screen),
-    CopyFromParent,
-    DefaultVisual(state::dpy, state::screen),
-    CWOverrideRedirect | CWBackPixmap | CWEventMask, &wa);
-  XDefineCursor(state::dpy, barwin, state::cursor[CurNormal]->cursor);
-  XMapRaised(state::dpy, barwin);
-  XSetClassHint(state::dpy, barwin, &ch);
-  return barwin;
-}
-
-Window x11::create_barwin(int x, int y, int w) {
-  return create_window("dwm", "bar", x, y, w, state::bar_height);
-}
-void x11::destroy_barwin(Window barwin) {
-  XDestroyWindow(state::dpy, barwin);
-}
+//Window create_window(
+//    const char* name,
+//    const char* clas,
+//    int x,
+//    int y,
+//    int w,
+//    int h
+//) {
+//  XSetWindowAttributes wa = {
+//      .background_pixmap = ParentRelative,
+//      .event_mask = ButtonPressMask | ExposureMask,
+//      .override_redirect = True
+//  };
+//  XClassHint ch = {"dwm", "dwm"};
+//  Window barwin = XCreateWindow(
+//    state::dpy,
+//    state::root,
+//    x,
+//    y,
+//    w,
+//    state::bar_height,
+//    0,
+//    DefaultDepth(state::dpy, state::screen),
+//    CopyFromParent,
+//    DefaultVisual(state::dpy, state::screen),
+//    CWOverrideRedirect | CWBackPixmap | CWEventMask, &wa);
+//  XDefineCursor(state::dpy, barwin, state::cursor[CurNormal]->cursor);
+//  XMapRaised(state::dpy, barwin);
+//  XSetClassHint(state::dpy, barwin, &ch);
+//  return barwin;
+//}
+//
+//Window x11::create_barwin(int x, int y, int w) {
+//  return create_window("dwm", "bar", x, y, w, state::bar_height);
+//}
+//void x11::destroy_barwin(Window barwin) {
+//  XDestroyWindow(state::dpy, barwin);
+//}
 void x11::grab_keys() {
   update_numlock_mask();
   {

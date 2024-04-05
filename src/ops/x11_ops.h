@@ -16,12 +16,12 @@ namespace ops::x11 {
   int get_root_ptr(int *x, int *y);
   long get_state(Window w);
   int get_text_prop(Window w, Atom atom, std::string& text);
-  Window create_barwin(int x, int y, int w);
-  void destroy_barwin(Window barwin);
+  //Window create_barwin(int x, int y, int w);
+  //void destroy_barwin(Window barwin);
   void update_client_list();
   int update_geometry();
   void update_numlock_mask();
-  void update_status();
+  //void update_status();
   void grab_keys();
   void scan();
 }

@@ -16,14 +16,14 @@ namespace cyd_wm::ui {
   })
   
   COMPONENT(KeynavTargetItem, {
-    theme_t *theme = &default_theme;
-    key_nav_target* target;
+    theme_t *theme = theme_t::default_theme();
+    const key_nav_target& target;
     KeySym keysym;
   }) {
     ON_REDRAW { return { }; }
     FRAGMENT {
       //log.info("DESC: %s", props->target->description.c_str());
-      auto [fg, bg] = get_color(props->target->type);
+      auto [fg, bg] = get_color(props->target.type);
       str key = str{XKeysymToString(props->keysym)};
       std::transform(key.begin(), key.end(), key.begin(), ::toupper);
       fragment.append(
@@ -42,7 +42,7 @@ namespace cyd_wm::ui {
           .font_family(props->theme->font2)
           .font_weight(vg::font_weight_e ::BOLD)
           .font_size(11),
-        vg::text {{props->target->description}}
+        vg::text {{props->target.description}}
           .x(16)
           .y(8)
           .fill(fg)
@@ -67,12 +67,11 @@ namespace cyd_wm::ui {
   };
   
   COMPONENT(KeynavNavigator, {
-    theme_t *theme = &default_theme;
+    theme_t *theme = theme_t::default_theme();
   } STATE {
     std::optional<key_nav_target*> current = std::nullopt;
   }) {
     ON_CUSTOM_EVENTS(ON_EVENT(KeynavUpdate, {
-      if (get_id(state->win->win_ref) != ev->win) return;
       state->current = ev->current;
       state->force_redraw();
     }))
@@ -92,7 +91,7 @@ namespace cyd_wm::ui {
               ({
                  with(state->current.value()->map)
                    .map_to(
-                     [&](const std::pair<KeySym, key_nav_target*> &it) -> map_to_result_t {
+                     [&](const std::pair<KeySym, key_nav_target> &it) -> map_to_result_t {
                        int i = _i++;
                        return {
                          KeynavTargetItem {{

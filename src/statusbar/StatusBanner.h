@@ -19,7 +19,7 @@
 
 namespace cyd_wm::ui {
     COMPONENT(StatusBanner, {
-      theme_t *theme = &default_theme;
+      theme_t *theme = theme_t::default_theme();
     }) {
       ON_REDRAW {
         return {

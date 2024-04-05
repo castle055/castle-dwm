@@ -126,9 +126,6 @@ void setup() {
   
   settheme();
   
-  /* init bars */
-  ops::bar::init_where_needed();
-  ops::x11::update_status();
   /* supporting window for NetWMCheck */
   state::wmcheckwin = XCreateSimpleWindow(state::dpy, state::root, 0, 0, 1, 1, 0, 0, 0);
   XChangeProperty(state::dpy, state::wmcheckwin, state::netatom[NetWMCheck], XA_WINDOW, 32,
@@ -230,7 +227,7 @@ int main(int argc, char *argv[]) {
   state::log_file.open(state::config::log_file.c_str(), std::ios::app);
   ops::file::reload_key_nav();
   
-  XInitThreads();
+  //XInitThreads();
   
   ops::log::info("Starting CDWM...");
   //program_shell::set_var("TERM_HEADER", "[C-DWM Shell v0.1]");
@@ -256,12 +253,27 @@ int main(int argc, char *argv[]) {
   state::scheme = (Clr **) ecalloc(state::config::colors.size() + 1, sizeof(Clr *));
   load_xresources();
   
+  //cyd_wm::WorkspaceStatus st;
+  //cydui::window::create(
+  //  cydui::layout::create(cyd_wm::CydWMStatusBar{{.status = &st}}),
+  //  "Workspace Selector",
+  //  "castle-dwm-ui",
+  //  0, 0 + 0, // X, Y of the window
+  //  1280, 26, // W, H of the window
+  //  true
+  //);
+  //while (1);
+  //return 0;
   setup();
 #ifdef __OpenBSD__
   if (pledge("stdio rpastd::iosproc exec", NULL) == -1)
         die("pledge");
 #endif /* __OpenBSD__ */
   ops::x11::scan();
+  /* init bars */
+  ops::bar::init_where_needed();
+  ops::bar::update_all();
+  
   run();
   cleanup();
   XCloseDisplay(state::dpy);
