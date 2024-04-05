@@ -11,6 +11,9 @@ jobs:
     steps:
       - name: Set up system
         run: |
+          pacman-key --init
+          pacman -Sy --noconfirm
+          pacman --noconfirm -S archlinux-keyring
           pacman -Syu --noconfirm
           pacman --noconfirm -S base-devel nodejs openssh git cmake ninja
           pacman --noconfirm -S libx11 libxrender fontconfig libxft libxinerama yaml-cpp libjpeg-turbo
@@ -27,7 +30,7 @@ jobs:
         run: |
           echo -e '[cpr-main]\n\rSigLevel = Optional TrustAll\n\rServer = http://localhost:35401/cpr-main' >> /etc/pacman.conf
           pacman -Sy
-          pacman --noconfirm -S cydstd cyd-ui cyd-ui-std
+          pacman --noconfirm -S cydstd cyd-ui
       - name: Prepare source code
         run: |
           git clone http://localhost:35400/castle/cyd-wm.git
