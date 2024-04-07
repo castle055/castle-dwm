@@ -46,6 +46,8 @@ namespace cyd_wm::ui::icons {
             .fill(props->props.color)
         );
       }
+      ON_MOUSE_ENTER {/*parent->on_mouse_enter(x,y);*/}
+      ON_MOUSE_EXIT {}
     };
     struct icon_base: public cydui::components::component_t<icon_baseEventHandler, icon_base> {
       CYDUI_COMPONENT_METADATA(NAME)

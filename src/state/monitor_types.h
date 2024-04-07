@@ -5,13 +5,12 @@
 #ifndef CYD_WM_MONITOR_TYPES_H
 #define CYD_WM_MONITOR_TYPES_H
 
-#include "core_types.h"
-#include "../statusbar/CydWMStatusBar.h"
+#include "../statusbar/types.h"
 
 struct monitor_bar_t {
   bool init = false;
   int wlen = 290 + 360;
-  
+
   // Workspaces
   cyd_wm::WorkspaceStatus wstatus;
   //cydui::layout::Layout* wlay = nullptr;
@@ -40,13 +39,14 @@ struct monitor_t {
   monitor_t *next = nullptr;
   const Layout *lt[2];
   Pertag *pertag = nullptr;
-  
+
   monitor_bar_t bar;
   unsigned long barwin = 0;
 };
 
 struct bar_t {
   int width;
+  monitor_t* monitor;
   Window win;
   Window suggestion_window;
 };

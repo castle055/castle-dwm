@@ -47,6 +47,10 @@ namespace cyd_wm {
     win_status_update_t type = win_status_update_t::WINDOW_TITLE;
     std::string str1;
   })
+
+  EVENT(WindowBannerUpdate, {
+    monitor_t* monitor = nullptr;
+  })
   
   struct WorkspaceStatus {
     int occupied_workspaces = 0;
