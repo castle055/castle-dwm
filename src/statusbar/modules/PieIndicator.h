@@ -1,8 +1,0 @@
-//
-// Created by castle on 11/7/23.
-//
-
-#ifndef CYD_WM_STATUS_BAR_PIEINDICATOR_H
-#define CYD_WM_STATUS_BAR_PIEINDICATOR_H
-
-#endif //CYD_WM_STATUS_BAR_PIEINDICATOR_H
