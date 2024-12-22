@@ -4,6 +4,7 @@ pkgrel=1
 pkgdesc="Cydonia Window Manager"
 arch=('any')
 license=('GPL3')
+options=('!strip')
 
 depends=(
     cydstd cyd-ui
